@@ -1,31 +1,20 @@
-/* Wedding Save the Date Styles */
+/* Traditional Indian Wedding Save the Date Styles */
 :root {
-    /* Color Palette */
     --primary-color: #a8071a;
     --gold-color: #d4af37;
-    --rose-gold: #b76e79;
-    --teal-color: #2a8e82;
-    --turquoise: #40e0d0;
     --text-color: #5a3921;
     --light-text: #7d5a3c;
-    --bg-color: #ffffff;
-    --white-bg: rgba(255, 255, 255, 0.95);
+    --bg-color: #f8f3e9;
+    --white-bg: rgba(255, 255, 255, 0.9);
     --shadow-color: rgba(0, 0, 0, 0.1);
     --gold-shadow: rgba(212, 175, 55, 0.5);
     
-    /* Calendar Colors */
-    --calendar-border: #d4af37;
-    --calendar-day-bg: rgba(255, 255, 255, 0.7);
-    --calendar-wedding-day-bg: rgba(183, 110, 121, 0.15);
-    --calendar-wedding-day-border: #b76e79;
-    --logo-color: #2a8e82;
-    
     /* Responsive font sizes using clamp */
-    --h1-size: clamp(2rem, 6vw, 3.8rem);
-    --h2-size: clamp(1.3rem, 5vw, 2.2rem);
-    --h3-size: clamp(1.1rem, 4vw, 1.8rem);
-    --normal-text: clamp(0.9rem, 3vw, 1.2rem);
-    --small-text: clamp(0.7rem, 2vw, 0.9rem);
+    --h1-size: clamp(2rem, 5vw, 3.5rem);
+    --h2-size: clamp(1.5rem, 4vw, 2.2rem);
+    --h3-size: clamp(1.2rem, 3vw, 1.8rem);
+    --normal-text: clamp(1rem, 2vw, 1.2rem);
+    --small-text: clamp(0.8rem, 1.5vw, 0.9rem);
     
     /* Spacing */
     --container-padding: clamp(10px, 3vw, 20px);
@@ -112,7 +101,7 @@
 }
 
 .download-button span {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
     letter-spacing: 0.5px;
     font-size: clamp(0.8rem, 2vw, 1rem);
@@ -128,7 +117,7 @@
     color: white;
     padding: 12px 25px;
     border-radius: 50px;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-weight: 600;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 1100;
@@ -151,6 +140,10 @@
         margin: 0;
         padding: 0;
     }
+    
+    .border-design {
+        box-shadow: none;
+    }
 }
 
 /* Class added during PDF generation */
@@ -159,20 +152,20 @@
 }
 
 body {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: relative;
     background-image: url('images/mandala.jpg');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
     background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
 }
 
 body::before {
@@ -182,448 +175,497 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(248, 243, 233, 0.85);
     z-index: -1;
 }
 
 .container {
-    max-width: min(95vw, 1200px);
-    margin: clamp(10px, 3vh, 25px) auto;
+    max-width: min(90vw, 900px);
+    margin: clamp(20px, 5vh, 40px) auto;
     padding: var(--container-padding);
 }
 
-/* Couple Names Header */
-.couple-names-header {
-    text-align: center;
-    padding: 10px 0;
+.border-design {
+    border: 2px solid var(--gold-color);
+    padding: clamp(10px, 3vw, 20px);
     position: relative;
-    z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    width: 100%;
-}
-
-.couple-names-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: var(--h2-size);
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0;
-    line-height: 1.3;
-    text-align: center;
-}
-
-.couple-names-header .and-symbol {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(2rem, 8vw, 3.5rem);
-    color: var(--gold-color);
-    position: relative;
-    margin: 0 10px;
-}
-
-/* Save the Date Container - Main Layout */
-.save-date-container {
-    display: flex;
-    flex-wrap: wrap;
     background-color: var(--white-bg);
-    box-shadow: 0 10px 30px var(--shadow-color);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
+    box-shadow: 0 0 20px var(--shadow-color);
 }
 
-/* Left Section: Photo Frame */
-.photo-section {
-    flex: 1;
-    min-width: 300px;
-    padding: var(--content-padding);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-/* Right Section: Event Details */
-.details-section {
-    flex: 1;
-    min-width: 300px;
-    padding: var(--content-padding);
-    background-color: rgba(255, 255, 255, 0.95);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-left: 1px solid rgba(212, 175, 55, 0.3);
-    position: relative;
-}
-
-/* Decorative background pattern for the details section */
-.details-section::before {
+.border-design::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='none' stroke='%232a8e82' stroke-width='0.5' d='M10,10 L90,10 L90,90 L10,90 Z'/%3E%3Cpath fill='none' stroke='%232a8e82' stroke-width='0.3' d='M20,20 L80,20 L80,80 L20,80 Z'/%3E%3C/svg%3E");
-    background-size: 100px 100px;
-    opacity: 0.05;
-    z-index: 0;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid var(--gold-color);
+    pointer-events: none;
 }
 
-/* Octagonal Frame Styles */
-.octagon-frame {
-    position: relative;
-    width: 80%;
-    max-width: 400px;
-    aspect-ratio: 1/1;
-    margin: 0 auto 30px;
+.content {
+    padding: var(--content-padding);
+    text-align: center;
 }
 
-.frame-border {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    background: linear-gradient(45deg, var(--gold-color), #f5d76e, var(--gold-color));
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-}
-
-.photo-container {
-    width: 100%;
-    height: 100%;
-    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: white;
+.ganesha-container {
+    margin-bottom: var(--section-spacing);
     position: relative;
 }
 
-.couple-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+.ganesha-image {
+    width: clamp(5%, 30vw, 30%);
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid var(--gold-color);
+    padding: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 15px var(--gold-shadow);
+    transition: transform 0.3s ease;
 }
 
-.couple-photo:hover {
+.ganesha-image:hover {
     transform: scale(1.05);
 }
 
-/* Save Our Date Text */
-.save-our-date {
+.invitation-text {
+    position: relative;
+}
+
+.save-the-date {
     font-family: 'Dancing Script', cursive;
     font-size: var(--h1-size);
-    color: var(--rose-gold);
-    margin-top: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    color: var(--primary-color);
+    margin-bottom: clamp(20px, 5vw, 30px);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     position: relative;
-    z-index: 1;
-    white-space: nowrap;
-    text-align: center;
 }
 
-.save-our-date::after {
+.save-the-date::after {
     content: '';
     display: block;
-    width: 60%;
-    height: 2px;
-    background: linear-gradient(to right, transparent, var(--gold-color), transparent);
-    margin: 10px auto 0;
-}
-
-/* Calendar Widget Styles */
-.calendar-widget {
-    margin: 20px 0 30px;
-    position: relative;
-    z-index: 1;
-}
-
-.calendar-header {
-    text-align: center;
-    margin-bottom: 15px;
-}
-
-.calendar-header h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: var(--h3-size);
-    color: var(--text-color);
-    margin: 0;
-    position: relative;
-    display: inline-block;
-}
-
-.calendar-header h3::after {
-    content: '';
-    display: block;
-    width: 50%;
+    width: clamp(40%, 15vw, 10%);
     height: 2px;
     background-color: var(--gold-color);
     margin: 5px auto 0;
 }
 
-.calendar-grid {
-    border: 1px solid var(--gold-color);
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.weekday-row {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    background-color: rgba(212, 175, 55, 0.1);
-    border-bottom: 1px solid var(--gold-color);
-}
-
-.weekday {
-    padding: 8px 0;
-    text-align: center;
-    font-weight: 600;
-    font-size: clamp(0.8rem, 1.5vw, 1rem);
-    color: var(--text-color);
-}
-
-.days-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-}
-
-.day {
-    aspect-ratio: 1/1;
+.names-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
-    border-right: 1px solid rgba(212, 175, 55, 0.2);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    margin-bottom: clamp(20px, 5vw, 40px);
+    flex-wrap: wrap;
+}
+
+.groom, .bride {
+    flex: 1;
+    min-width: 250px;
+    padding: 0 20px;
+}
+
+.and {
+    font-family: 'Dancing Script', cursive;
+    font-size: 250%;
+    color: #d4af37;
+    margin: 0 20px;
     position: relative;
 }
 
-.day:nth-child(7n) {
-    border-right: none;
+.and::before, .and::after {
+    content: '❈';
+    font-size: 1rem;
+    color: #a8071a;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.day.empty {
-    background-color: rgba(248, 248, 248, 0.5);
+.and::before {
+    top: -15px;
 }
 
-.day.wedding-day {
+.and::after {
+    bottom: -15px;
+}
+
+/* Symbol transition animation */
+.symbol-transition {
+    display: inline-block;
+    transition: all 0.5s ease;
     position: relative;
-    z-index: 2;
+    font-size: clamp(2rem, 6vw, 3.5rem);
 }
 
-.heart-highlight {
+@keyframes symbolFadeOut {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.5) rotate(180deg); }
+}
+
+@keyframes symbolFadeIn {
+    0% { opacity: 0; transform: scale(0.5) rotate(-180deg); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.symbol-ring::before {
+    content: '💍';
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    position: relative;
-    color: var(--rose-gold);
-    font-weight: 700;
+    justify-content: center;
+    animation: symbolFadeIn 0.5s forwards;
 }
 
-.heart-highlight::before {
+.symbol-heart::before {
+    content: '❤️';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: symbolFadeIn 0.5s forwards;
+}
+
+.symbol-fade-out {
+    animation: symbolFadeOut 0.5s forwards;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #5a3921;
+    transition: font-size 0.3s ease;
+}
+
+.groom p, .bride p {
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: #7d5a3c;
+    transition: font-size 0.3s ease;
+}
+
+.wedding-details {
+    margin-bottom: clamp(20px, 5vw, 40px);
+    position: relative;
+    padding: clamp(10px, 3vw, 20px) 0;
+}
+
+.wedding-details::before, .wedding-details::after {
     content: '';
     position: absolute;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
-    background-color: rgba(183, 110, 121, 0.15);
-    border-radius: 50%;
-    z-index: -1;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 1px;
+    background-color: #d4af37;
 }
 
-.heart-highlight::after {
-    content: '❤';
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    font-size: 0.8rem;
-    color: var(--rose-gold);
+.wedding-details::before {
+    top: 0;
 }
 
-/* Event Details Styles */
-.event-details {
-    margin-top: 20px;
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.wedding-details::after {
+    bottom: 0;
 }
 
-.date-info {
-    text-align: center;
+.wedding-details h3 {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #a8071a;
+}
+
+.date, .location {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
     margin-bottom: 10px;
 }
 
-.day-of-week {
-    font-family: 'Playfair Display', serif;
-    font-size: var(--normal-text);
-    color: var(--text-color);
-    font-weight: 600;
-}
-
 .date {
-    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+    color: var(--primary-color);
+    background: linear-gradient(to right, #d4af37, #a8071a, #d4af37);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    padding: clamp(10px, 3vw, 20px) clamp(15px, 4vw, 30px);
+    position: relative;
+    display: inline-block;
+    transition: all 0.3s ease;
+    font-size: clamp(1.3rem, 3.5vw, 1.8rem); /* Larger font size for emphasis */
+    letter-spacing: 1px;
+    text-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    border: 3px solid var(--gold-color);
+    border-radius: clamp(8px, 2vw, 12px);
+    margin: clamp(15px, 4vw, 25px) auto;
+    box-shadow: 0 0 15px var(--gold-shadow);
+    background-color: rgba(255, 255, 255, 0.9);
+    position: relative;
+    z-index: 1;
+    animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    5% { transform: scale(1.1); }
+    10% { transform: scale(1); }
+    15% { transform: scale(1.05); }
+    20% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+.date::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(212, 175, 55, 0.1), rgba(168, 7, 26, 0.1), rgba(212, 175, 55, 0.1));
+    z-index: -1;
+    border-radius: clamp(6px, 1.5vw, 10px);
+}
+
+/* Heart icon next to date */
+.date::before {
+    content: '❤️';
+    position: absolute;
+    top: 50%;
+    left: -30px;
+    transform: translateY(-50%);
+    font-size: 1.5em;
+    animation: heartPump 1.5s infinite;
+    display: block;
+}
+
+@keyframes heartPump {
+    0% { transform: translateY(-50%) scale(1); }
+    5% { transform: translateY(-50%) scale(1.3); }
+    10% { transform: translateY(-50%) scale(1); }
+    15% { transform: translateY(-50%) scale(1.2); }
+    20% { transform: translateY(-50%) scale(1); }
+    100% { transform: translateY(-50%) scale(1); }
+}
+
+/* Pulse animation for the date */
+@keyframes date-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse-highlight {
+    animation: date-pulse 1s ease;
+}
+
+.date .sparkle-left, .date .sparkle-right {
+    content: '✨';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: var(--gold-color);
+    animation: sparkle 2s infinite alternate;
+    display: block;
+}
+
+.date .sparkle-left {
+    left: -25px;
+}
+
+.date .sparkle-right {
+    right: -25px;
+}
+
+@keyframes sparkle {
+    0% {
+        opacity: 0.5;
+        transform: translateY(-50%) scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-50%) scale(1.2);
+    }
+    100% {
+        opacity: 0.5;
+        transform: translateY(-50%) scale(0.8);
+    }
+}
+
+.location {
+    font-style: italic;
+}
+
+/* Sparkle elements */
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--gold-color);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 0 10px 2px rgba(212, 175, 55, 0.8);
+    animation: float-sparkle 3s ease-in-out infinite;
+}
+
+@keyframes float-sparkle {
+    0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(-20px) rotate(180deg) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px) rotate(360deg) scale(0.5);
+    }
+}
+
+.sanskrit-verse {
+    margin: var(--section-spacing) 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: clamp(10px, 3vw, 20px);
+    border-radius: 8px;
+    border: 1px solid var(--gold-color);
+    box-shadow: 0 2px 8px var(--shadow-color);
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.countdown-container {
+    margin-top: var(--section-spacing);
+    margin-bottom: var(--section-spacing);
+}
+
+.countdown-container h3 {
     font-size: var(--h3-size);
-    color: var(--rose-gold);
-    font-weight: 700;
-    margin-top: 5px;
-}
-
-.venue-info {
-    text-align: center;
-    padding: 15px 0;
-    border-top: 1px solid rgba(212, 175, 55, 0.3);
-    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-}
-
-.venue-name {
-    font-family: 'Playfair Display', serif;
-    font-size: var(--normal-text);
+    margin-bottom: clamp(10px, 3vw, 20px);
     color: var(--text-color);
-    font-weight: 600;
+}
+
+.countdown {
+    display: flex;
+    justify-content: center;
+    gap: clamp(5px, 1.5vw, 15px);
+    flex-wrap: nowrap; /* Ensure it stays in one line */
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+    padding-bottom: 5px; /* Space for potential scrollbar */
+    -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar in Firefox */
+    width: 100%;
+    max-width: 100%;
+}
+
+.countdown::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: clamp(6px, 1.5vw, 12px);
+    border-radius: 8px;
+    min-width: clamp(50px, 12vw, 70px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--gold-color);
+    flex: 0 0 auto; /* Prevent items from growing or shrinking */
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-item::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: radial-gradient(circle at center, rgba(212, 175, 55, 0.3) 0%, transparent 70%);
+    opacity: 0;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}
+
+.countdown-item span:first-child {
+    font-size: clamp(1.1rem, 3.5vw, 1.8rem);
+    font-weight: bold;
+}
+
+.label {
+    font-size: clamp(0.6rem, 1.2vw, 0.8rem);
+    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.venue-address {
-    font-family: 'Poppins', sans-serif;
-    font-size: var(--small-text);
-    color: var(--light-text);
-    margin-top: 5px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+.footer {
+    margin-top: clamp(20px, 5vw, 40px);
+    font-style: italic;
+    color: #7d5a3c;
 }
 
-.rsvp-info {
-    text-align: center;
-    margin: 10px 0;
+/* Decorative elements */
+.content::before, .content::after {
+    content: '❈';
+    font-size: 2rem;
+    color: #d4af37;
+    position: absolute;
+    opacity: 0.5;
 }
 
-.rsvp-label {
-    font-family: 'Playfair Display', serif;
-    font-size: var(--small-text);
-    color: var(--text-color);
-    font-weight: 600;
+.content::before {
+    top: 10px;
+    left: 10px;
 }
 
-.rsvp-date {
-    font-family: 'Poppins', sans-serif;
-    font-size: var(--normal-text);
-    color: var(--rose-gold);
-    margin-top: 5px;
+.content::after {
+    bottom: 10px;
+    right: 10px;
 }
 
-/* Action Buttons */
-.action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.action-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 15px;
-    border: 1px solid var(--gold-color);
-    border-radius: 30px;
-    background-color: white;
-    color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
-    font-size: var(--small-text);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-    background-color: var(--gold-color);
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.action-btn i {
-    font-size: 1rem;
-}
-
-/* Animation for language change */
-.fade-transition {
-    transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.fade-out {
-    opacity: 0;
-    transform: translateY(10px);
-}
-
-.fade-in {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Responsive Styles */
-@media (max-width: 992px) {
-    .save-date-container {
-        flex-direction: column;
-    }
-    
-    .photo-section, .details-section {
-        min-width: 100%;
-    }
-    
-    .details-section {
-        border-left: none;
-        border-top: 1px solid rgba(212, 175, 55, 0.3);
-    }
-    
-    .octagon-frame {
-        width: 60%;
-        max-width: 300px;
-    }
-    
-    .couple-names-header {
-        flex-direction: column;
-        gap: 5px;
-    }
-    
-    .couple-names-header h2 {
-        font-size: clamp(1.2rem, 4.5vw, 2rem);
-    }
-    
-    .save-our-date {
-        font-size: clamp(1.8rem, 5vw, 3rem);
-    }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .action-buttons {
+    .names-container {
         flex-direction: column;
-        gap: 10px;
     }
     
-    .action-btn {
-        width: 100%;
-        justify-content: center;
+    .and {
+        margin: 20px 0;
+    }
+    
+    .groom, .bride {
+        margin-bottom: 20px;
     }
     
     /* Hide text in download button, show only icon */
@@ -639,155 +681,57 @@ body::before {
         display: none;
     }
     
-    .weekday {
-        font-size: clamp(0.7rem, 2vw, 0.9rem);
-        padding: 5px 0;
+    .download-button svg {
+        margin: 0;
     }
     
-    .day {
-        font-size: clamp(0.8rem, 2.5vw, 1rem);
+    /* Ensure countdown stays in one line */
+    .countdown {
+        justify-content: space-between;
+        padding: 0 5px;
     }
     
-    .venue-name {
-        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    .countdown-item {
+        min-width: clamp(40px, 10vw, 60px);
+        padding: clamp(4px, 1vw, 8px);
     }
     
-    .venue-address {
-        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
-    }
-    
-    .date-info .date {
-        font-size: clamp(1rem, 3.5vw, 1.5rem);
-    }
-    
-    .container {
-        margin: clamp(10px, 3vh, 30px) auto;
+    .date::before {
+        left: -20px;
+        font-size: 1.2em;
     }
 }
 
 @media (max-width: 480px) {
-    .octagon-frame {
-        width: 85%;
-        max-width: 250px;
+    .countdown-item span:first-child {
+        font-size: clamp(0.9rem, 3vw, 1.2rem);
     }
     
-    .save-our-date {
-        font-size: clamp(1.6rem, 6vw, 2.2rem);
-        margin-top: 15px;
+    .label {
+        font-size: clamp(0.5rem, 1vw, 0.7rem);
     }
     
-    .couple-names-header h2 {
-        font-size: clamp(1.1rem, 4.5vw, 1.6rem);
+    .date .sparkle-left, .date .sparkle-right {
+        display: none;
     }
     
-    .couple-names-header .and-symbol {
-        font-size: clamp(1.4rem, 6vw, 2.2rem);
-    }
-    
-    .calendar-header h3 {
-        font-size: clamp(0.9rem, 4vw, 1.3rem);
-    }
-    
-    .weekday {
-        font-size: clamp(0.6rem, 2.5vw, 0.8rem);
-        padding: 3px 0;
-    }
-    
-    .day {
-        font-size: clamp(0.7rem, 3vw, 0.9rem);
-    }
-    
-    .heart-highlight::after {
-        font-size: 0.6rem;
-        top: -3px;
-        right: -3px;
-    }
-    
-    .date-info, .venue-info, .rsvp-info {
-        padding: 8px 0;
-    }
-    
-    .action-btn {
-        padding: 8px 12px;
-        font-size: clamp(0.7rem, 3vw, 0.8rem);
-    }
-    
-    .venue-name {
-        font-size: clamp(0.8rem, 3.5vw, 1rem);
-        letter-spacing: 0.5px;
-    }
-    
-    .venue-address {
-        font-size: clamp(0.6rem, 3vw, 0.8rem);
-        letter-spacing: 1px;
-    }
-    
-    .rsvp-label {
-        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
-    }
-    
-    .rsvp-date {
-        font-size: clamp(0.8rem, 3vw, 0.9rem);
-    }
-    
-    .day-of-week {
-        font-size: clamp(0.8rem, 3vw, 1rem);
-    }
-    
-    .date {
-        font-size: clamp(0.9rem, 4vw, 1.3rem);
+    .date::before {
+        left: -15px;
+        font-size: 1em;
     }
 }
 
-/* Extra Small Screens */
-@media (max-width: 375px) {
-    .couple-names-header h2 {
-        font-size: clamp(1rem, 5vw, 1.4rem);
-    }
-    
-    .couple-names-header .and-symbol {
-        font-size: clamp(1.2rem, 7vw, 2rem);
-    }
-    
-    .save-our-date {
-        font-size: clamp(1.4rem, 7vw, 2rem);
-    }
-    
-    .octagon-frame {
-        width: 90%;
-    }
-    
-    .calendar-header h3 {
-        font-size: clamp(0.8rem, 4.5vw, 1.2rem);
-    }
-    
-    .weekday {
-        font-size: clamp(0.5rem, 3vw, 0.7rem);
-        padding: 2px 0;
-    }
-    
-    .day {
-        font-size: clamp(0.6rem, 3.5vw, 0.8rem);
-    }
-    
-    .venue-name {
-        font-size: clamp(0.7rem, 4vw, 0.9rem);
-    }
-    
-    .venue-address {
-        font-size: clamp(0.5rem, 3.5vw, 0.7rem);
-    }
-    
-    .date {
-        font-size: clamp(0.8rem, 4.5vw, 1.1rem);
-    }
-    
-    .action-btn {
-        padding: 6px 10px;
-        font-size: clamp(0.6rem, 3.5vw, 0.7rem);
-    }
-    
-    .action-btn i {
-        font-size: 0.9rem;
-    }
+/* Animation for language change */
+.fade-transition {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
 }
