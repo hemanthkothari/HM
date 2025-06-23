@@ -3,169 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemanth & Minakashi - Save the Date</title>
+    <title>शुभ विवाह - Indian Wedding</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Add html2pdf library for PDF generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Dancing+Script:wght@400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    
-    <!-- Language Toggle -->
-    <div class="language-toggle">
-        <div class="language-capsule">
-            <button id="langEn" class="lang-btn active" data-lang="en">English</button>
-            <button id="langHi" class="lang-btn" data-lang="hi">हिंदी</button>
-        </div>
+    <div class="floating-download-btn">
+        <button id="download-btn" class="download-btn">Download Invitation</button>
     </div>
-    
-    <!-- Floating download button -->
-    <div class="download-button" id="downloadBtn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span data-en="Download Invitation" data-hi="निमंत्रण डाउनलोड करें">Download Invitation</span>
-    </div>
-    
-    <div class="container" id="invitation-content">
-        <!-- Couple Names Header -->
-        <div class="couple-names-header">
-            <h2 data-en="Hemanth Kothari" data-hi="हेमंत कोठारी">Hemanth Kothari</h2>
-            <div class="and-symbol">&</div>
-            <h2 data-en="Minakashi Rampuria" data-hi="मीनाक्षी रामपुरिया">Minakashi Rampuria</h2>
-        </div>
-        
-        <div class="save-date-container">
-            <!-- Left Section: Photo Frame -->
-            <div class="photo-section">
-                <div class="octagon-frame">
-                    <div class="frame-border">
-                        <div class="photo-container">
-                            <img src="images/ganesha.jpg" alt="Couple Photo" class="couple-photo">
-                        </div>
+    <div class="container">
+        <div class="border-design">
+            <div class="content">
+                <div class="ganesha-symbol"></div>
+                <div class="kalash-symbol"></div>
+                <div class="mandala-top"></div>
+                <h3 class="pre-heading">॥ शुभ विवाह ॥</h3>
+                <div class="om-symbol">ॐ</div>
+                <div class="names-container">
+                    <span class="name">Hemanth kothari</span>
+                    <span class="weds">weds</span>
+                    <span class="name">minakshi rampuria</span>
+                </div>
+                <div class="date-container">
+                    <div class="date-box">
+                        <span class="date">2</span>
+                        <span class="month">November</span>
+                        <span class="year">2025</span>
                     </div>
                 </div>
-                <h1 class="save-our-date" data-en="Save Our Date" data-hi="हमारी तिथि सुरक्षित रखें">Save Our Date</h1>
-            </div>
-            
-            <!-- Right Section: Event Details -->
-            <div class="details-section">
-                
-                <!-- Calendar Widget -->
-                <div class="calendar-widget">
-                    <div class="calendar-header">
-                        <div class="date-info">
-                        <div class="day-of-week" data-en="Sunday" data-hi="रविवार">Sunday</div>
-                        <div class="date" data-en="November 2, 2025" data-hi="नवंबर 2, 2025">November 2, 2025</div>
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <span id="days">0</span>
+                        <span class="countdown-label">Days</span>
                     </div>
+                    <div class="countdown-item">
+                        <span id="hours">0</span>
+                        <span class="countdown-label">Hours</span>
                     </div>
-                    <div class="calendar-grid">
-                        <div class="weekday-row">
-                            <div class="weekday" data-en="S" data-hi="र">S</div>
-                            <div class="weekday" data-en="M" data-hi="सो">M</div>
-                            <div class="weekday" data-en="T" data-hi="मं">T</div>
-                            <div class="weekday" data-en="W" data-hi="बु">W</div>
-                            <div class="weekday" data-en="T" data-hi="गु">T</div>
-                            <div class="weekday" data-en="F" data-hi="शु">F</div>
-                            <div class="weekday" data-en="S" data-hi="श">S</div>
-                        </div>
-                        <div class="days-grid">
-                            <!-- Week 1 -->
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day">1</div>
-                            
-                            <!-- Week 2 -->
-                            <div class="day wedding-day">
-                                <div class="heart-highlight">
-                                    <span>2</span>
-                                </div>
-                            </div>
-                            <div class="day">3</div>
-                            <div class="day">4</div>
-                            <div class="day">5</div>
-                            <div class="day">6</div>
-                            <div class="day">7</div>
-                            <div class="day">8</div>
-                            
-                            <!-- Week 3 -->
-                            <div class="day">9</div>
-                            <div class="day">10</div>
-                            <div class="day">11</div>
-                            <div class="day">12</div>
-                            <div class="day">13</div>
-                            <div class="day">14</div>
-                            <div class="day">15</div>
-                            
-                            <!-- Week 4 -->
-                            <div class="day">16</div>
-                            <div class="day">17</div>
-                            <div class="day">18</div>
-                            <div class="day">19</div>
-                            <div class="day">20</div>
-                            <div class="day">21</div>
-                            <div class="day">22</div>
-                            
-                            <!-- Week 5 -->
-                            <div class="day">23</div>
-                            <div class="day">24</div>
-                            <div class="day">25</div>
-                            <div class="day">26</div>
-                            <div class="day">27</div>
-                            <div class="day">28</div>
-                            <div class="day">29</div>
-                            
-                            <!-- Week 6 -->
-                            <div class="day">30</div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                        </div>
+                    <div class="countdown-item">
+                        <span id="minutes">0</span>
+                        <span class="countdown-label">Minutes</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span id="seconds">0</span>
+                        <span class="countdown-label">Seconds</span>
                     </div>
                 </div>
-                
-                <!-- Event Details -->
-                <div class="event-details">
-                    
-                    
-                    <div class="venue-info">
-                        <div class="venue-name" data-en="ROYAL WEDDING VENUE" data-hi="रॉयल वेडिंग वेन्यू">ROYAL WEDDING VENUE</div>
-                        <div class="venue-address" data-en="BIKANER, RAJASTHAN" data-hi="बीकानेर, राजस्थान">BIKANER, RAJASTHAN</div>
-                    </div>
-                    
-                    <div class="rsvp-info">
-                        <div class="rsvp-label" data-en="RSVP BY:" data-hi="कृपया उत्तर दें:">RSVP BY:</div>
-                        <div class="rsvp-date" data-en="October 1, 2025" data-hi="अक्टूबर 1, 2025">October 1, 2025</div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="action-btn add-calendar">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span data-en="Add to Calendar" data-hi="कैलेंडर में जोड़ें">Add to Calendar</span>
-                        </button>
-                        <button class="action-btn share-btn">
-                            <i class="fas fa-share-alt"></i>
-                            <span data-en="Share" data-hi="शेयर करें">Share</span>
-                        </button>
-                    </div>
-                </div>
+                <p class="venue">Celebration commences at</p>
+                <p class="venue-name">Bikaner</p>
+                <div class="swastik-symbol">॥ स्वस्तिक ॥</div>
+                <p class="details">Formal invitation to follow</p>
+                <p class="blessing">सर्वमंगल मांगल्ये शिवे सर्वार्थ साधिके</p>
+                <div class="mandala-bottom"></div>
             </div>
         </div>
     </div>
-    
     <script src="script.js"></script>
 </body>
 </html>
