@@ -9,11 +9,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup language toggle
     setupLanguageToggle();
     
-    // Setup location click to search
-    setupLocationClick();
-    
-    // Setup wedding day click to add to calendar
-    setupWeddingDayClick();
+    // Setup symbol transition animation
+    setupSymbolTransition();
     
     // Update the countdown every second
     const countdownTimer = setInterval(function() {
@@ -57,104 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('resize', adjustResponsiveElements);
     adjustResponsiveElements(); // Initial adjustment
 });
-
-// Function to setup location click to search
-function setupLocationClick() {
-    const locationElement = document.querySelector('.venue-address');
-    if (locationElement) {
-        locationElement.style.cursor = 'pointer';
-        locationElement.title = 'Click to see images of Bikaner, Rajasthan';
-        
-        // Add hover effect
-        locationElement.addEventListener('mouseover', function() {
-            this.style.textDecoration = 'underline';
-            this.style.color = 'var(--rose-gold)';
-        });
-        
-        locationElement.addEventListener('mouseout', function() {
-            this.style.textDecoration = 'none';
-            this.style.color = '';
-        });
-        
-        // Add click event to search for the location in Google Images
-        locationElement.addEventListener('click', function() {
-            const searchQuery = 'Bikaner Rajasthan tourism beauty';
-            window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}&tbm=isch`, '_blank');
-        });
-    }
-}
-
-// Function to setup wedding day click to add to calendar
-function setupWeddingDayClick() {
-    const weddingDayElement = document.querySelector('.wedding-day');
-    const addCalendarBtn = document.querySelector('.add-calendar');
-    
-    // Setup add to calendar functionality
-    const addToCalendar = function() {
-        // Create Google Calendar link
-        const eventTitle = 'Wedding of Hemanth and Minakashi';
-        const eventLocation = 'Bikaner, Rajasthan';
-        const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
-        const eventDate = '20251102'; // YYYYMMDD format
-        
-        // Set as all-day event
-        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
-        
-        window.open(googleCalendarUrl, '_blank');
-    };
-    
-    // Add event listener to wedding day in calendar
-    if (weddingDayElement) {
-        weddingDayElement.style.cursor = 'pointer';
-        weddingDayElement.title = 'Click to add to your calendar';
-        weddingDayElement.addEventListener('click', addToCalendar);
-    }
-    
-    // Add event listener to Add to Calendar button
-    if (addCalendarBtn) {
-        addCalendarBtn.addEventListener('click', addToCalendar);
-    }
-    
-    // Setup share button functionality
-    const shareBtn = document.querySelector('.share-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Wedding Invitation - Hemanth & Minakashi',
-                    text: 'You are invited to the wedding of Hemanth & Minakashi on November 2, 2025',
-                    url: window.location.href
-                })
-                .catch(error => console.log('Error sharing:', error));
-            } else {
-                // Fallback for browsers that don't support Web Share API
-                const dummy = document.createElement('input');
-                document.body.appendChild(dummy);
-                dummy.value = window.location.href;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-                
-                // Show a success message
-                const successMsg = document.createElement('div');
-                successMsg.className = 'download-success';
-                successMsg.textContent = getCurrentLanguage() === 'hi' ? 
-                    'लिंक कॉपी किया गया!' : 
-                    'Link copied to clipboard!';
-                
-                document.body.appendChild(successMsg);
-                
-                // Remove the success message after 3 seconds
-                setTimeout(() => {
-                    successMsg.style.opacity = '0';
-                    setTimeout(() => {
-                        document.body.removeChild(successMsg);
-                    }, 500);
-                }, 2500);
-            }
-        });
-    }
-}
 
 // Function to adjust responsive elements
 function adjustResponsiveElements() {
@@ -201,33 +100,6 @@ function adjustResponsiveElements() {
                     labelElement.style.fontSize = '';
                 }
             });
-        }
-    }
-    
-    // Adjust calendar based on screen width
-    const calendarGrid = document.querySelector('.calendar-grid');
-    if (calendarGrid) {
-        const containerWidth = calendarGrid.offsetWidth;
-        
-        // Adjust calendar day sizes for smaller screens
-        if (containerWidth < 500) {
-            const days = calendarGrid.querySelectorAll('.day');
-            days.forEach(day => {
-                if (day.classList.contains('wedding-day')) {
-                    day.style.transform = 'scale(1.03)'; // Slightly smaller scale on small screens
-                }
-            });
-        }
-    }
-    
-    // Adjust octagon frame for different screen sizes
-    const octagonFrame = document.querySelector('.octagon-frame');
-    if (octagonFrame) {
-        const containerWidth = document.querySelector('.photo-section').offsetWidth;
-        if (containerWidth < 350) {
-            octagonFrame.style.width = '90%';
-        } else {
-            octagonFrame.style.width = '80%';
         }
     }
 }
@@ -327,46 +199,41 @@ function applyLanguage(language) {
     // Translation data
     const translations = {
         'en': {
-            'save-our-date': 'Save Our Date',
-            'day-of-week': 'Sunday',
-            'date': 'November 2, 2025',
-            'venue-name': 'ROYAL WEDDING VENUE',
-            'venue-address': 'BIKANER, RAJASTHAN',
-            'rsvp-label': 'RSVP BY:',
-            'rsvp-date': 'October 1, 2025',
-            'add-calendar': 'Add to Calendar',
-            'share': 'Share',
+            'save-the-date': 'Save the Date',
+            'we-are-getting-married': 'We are getting married',
             'countdown-title': 'Countdown to the Big Day',
             'days': 'Days',
             'hours': 'Hours',
             'minutes': 'Minutes',
             'seconds': 'Seconds',
             'download': 'Download Invitation',
-            'month': 'November 2025'
+            'date': 'November 2, 2025'
         },
         'hi': {
-            'save-our-date': 'हमारी तिथि सुरक्षित रखें',
-            'day-of-week': 'रविवार',
-            'date': 'नवंबर 2, 2025',
-            'venue-name': 'रॉयल वेडिंग वेन्यू',
-            'venue-address': 'बीकानेर, राजस्थान',
-            'rsvp-label': 'कृपया उत्तर दें:',
-            'rsvp-date': 'अक्टूबर 1, 2025',
-            'add-calendar': 'कैलेंडर में जोड़ें',
-            'share': 'शेयर करें',
-            'countdown-title': 'उस खास दिन की उलटी गिनती',
+            'save-the-date': 'दिनांक सुरक्षित रखें',
+            'we-are-getting-married': 'हमारी शादी हो रही है',
+            'countdown-title': 'शादी के दिन तक का समय',
             'days': 'दिन',
             'hours': 'घंटे',
             'minutes': 'मिनट',
             'seconds': 'सेकंड',
             'download': 'निमंत्रण डाउनलोड करें',
-            'month': 'नवंबर 2025'
+            'date': '2 नवंबर, 2025'
         }
     };
     
     // Apply translations to elements with data attributes
     document.querySelectorAll('[data-' + language + ']').forEach(element => {
-        element.textContent = element.getAttribute('data-' + language);
+        // Special handling for date element with sparkles
+        if (element.classList.contains('date')) {
+            // Get the date text node (the middle child between sparkle elements)
+            const dateText = element.childNodes[1];
+            if (dateText && dateText.nodeType === Node.TEXT_NODE) {
+                dateText.nodeValue = element.getAttribute('data-' + language);
+            }
+        } else {
+            element.textContent = element.getAttribute('data-' + language);
+        }
         
         // Add fade transition
         element.classList.add('fade-transition');
@@ -380,64 +247,16 @@ function applyLanguage(language) {
     
     // Apply translations to specific elements
     if (translations[language]) {
-        // Save Our Date heading
-        const saveOurDate = document.querySelector('.save-our-date');
-        if (saveOurDate) {
-            applyTransitionEffect(saveOurDate, translations[language]['save-our-date']);
+        // Save the Date heading
+        const saveTheDate = document.querySelector('.save-the-date');
+        if (saveTheDate) {
+            applyTransitionEffect(saveTheDate, translations[language]['save-the-date']);
         }
         
-        // Calendar month heading
-        const calendarHeader = document.querySelector('.calendar-header h3');
-        if (calendarHeader) {
-            applyTransitionEffect(calendarHeader, translations[language]['month']);
-        }
-        
-        // Day of week
-        const dayOfWeek = document.querySelector('.day-of-week');
-        if (dayOfWeek) {
-            applyTransitionEffect(dayOfWeek, translations[language]['day-of-week']);
-        }
-        
-        // Date
-        const date = document.querySelector('.date');
-        if (date) {
-            applyTransitionEffect(date, translations[language]['date']);
-        }
-        
-        // Venue name
-        const venueName = document.querySelector('.venue-name');
-        if (venueName) {
-            applyTransitionEffect(venueName, translations[language]['venue-name']);
-        }
-        
-        // Venue address
-        const venueAddress = document.querySelector('.venue-address');
-        if (venueAddress) {
-            applyTransitionEffect(venueAddress, translations[language]['venue-address']);
-        }
-        
-        // RSVP label
-        const rsvpLabel = document.querySelector('.rsvp-label');
-        if (rsvpLabel) {
-            applyTransitionEffect(rsvpLabel, translations[language]['rsvp-label']);
-        }
-        
-        // RSVP date
-        const rsvpDate = document.querySelector('.rsvp-date');
-        if (rsvpDate) {
-            applyTransitionEffect(rsvpDate, translations[language]['rsvp-date']);
-        }
-        
-        // Add to Calendar button
-        const addCalendarBtn = document.querySelector('.add-calendar span');
-        if (addCalendarBtn) {
-            applyTransitionEffect(addCalendarBtn, translations[language]['add-calendar']);
-        }
-        
-        // Share button
-        const shareBtn = document.querySelector('.share-btn span');
-        if (shareBtn) {
-            applyTransitionEffect(shareBtn, translations[language]['share']);
+        // Wedding details heading
+        const weddingDetailsH3 = document.querySelector('.wedding-details h3');
+        if (weddingDetailsH3) {
+            applyTransitionEffect(weddingDetailsH3, translations[language]['we-are-getting-married']);
         }
         
         // Countdown title
@@ -484,23 +303,56 @@ function getCurrentLanguage() {
     return localStorage.getItem('preferredLanguage') || 'en';
 }
 
+// Function to setup symbol transition animation
+function setupSymbolTransition() {
+    const symbolElement = document.querySelector('.symbol-transition');
+    if (symbolElement) {
+        // Initial state is "&"
+        
+        // After 2 seconds, change to ring
+        setTimeout(() => {
+            symbolElement.classList.add('symbol-fade-out');
+            
+            setTimeout(() => {
+                symbolElement.textContent = '';
+                symbolElement.classList.add('symbol-ring');
+                symbolElement.classList.remove('symbol-fade-out');
+                
+                // After 2 more seconds, change to heart
+                setTimeout(() => {
+                    symbolElement.classList.add('symbol-fade-out');
+                    
+                    setTimeout(() => {
+                        symbolElement.classList.remove('symbol-ring');
+                        symbolElement.classList.add('symbol-heart');
+                        symbolElement.classList.remove('symbol-fade-out');
+                    }, 500);
+                }, 2000);
+            }, 500);
+        }, 2000);
+    }
+}
+
 // Function to add decorative elements and animations
 function addDecorations() {
-    // Add subtle animation to the save-our-date heading
-    const saveOurDate = document.querySelector('.save-our-date');
-    if (saveOurDate) {
-        saveOurDate.style.transition = 'all 0.5s ease';
+    // Add subtle animation to the save-the-date heading
+    const saveTheDate = document.querySelector('.save-the-date');
+    if (saveTheDate) {
+        saveTheDate.style.transition = 'all 0.5s ease';
         
-        saveOurDate.addEventListener('mouseover', function() {
-            this.style.textShadow = '2px 2px 4px rgba(183, 110, 121, 0.4)';
+        saveTheDate.addEventListener('mouseover', function() {
+            this.style.textShadow = '2px 2px 4px rgba(168, 7, 26, 0.4)';
             this.style.transform = 'scale(1.05)';
         });
         
-        saveOurDate.addEventListener('mouseout', function() {
-            this.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.1)';
+        saveTheDate.addEventListener('mouseout', function() {
+            this.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.2)';
             this.style.transform = 'scale(1)';
         });
     }
+    
+    // Animate the '&' symbol to change to ring and then heart
+    animateAndSymbol();
     
     // Add subtle animation to the countdown items
     const countdownItems = document.querySelectorAll('.countdown-item');
@@ -519,77 +371,168 @@ function addDecorations() {
     });
     
     // Add a subtle entrance animation for the main content
-    const saveDate = document.querySelector('.save-date-container');
-    if (saveDate) {
-        saveDate.style.opacity = '0';
-        saveDate.style.transform = 'translateY(20px)';
-        saveDate.style.transition = 'opacity 1s ease, transform 1s ease';
+    const content = document.querySelector('.content');
+    if (content) {
+        content.style.opacity = '0';
+        content.style.transform = 'translateY(20px)';
+        content.style.transition = 'opacity 1s ease, transform 1s ease';
         
         setTimeout(() => {
-            saveDate.style.opacity = '1';
-            saveDate.style.transform = 'translateY(0)';
+            content.style.opacity = '1';
+            content.style.transform = 'translateY(0)';
         }, 300);
     }
     
-    // Add hover effects to action buttons
-    const actionButtons = document.querySelectorAll('.action-btn');
-    actionButtons.forEach(button => {
-        button.style.transition = 'all 0.3s ease';
-        
-        button.addEventListener('mouseover', function() {
-            this.style.transform = 'translateY(-3px)';
-            this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
-            this.style.backgroundColor = 'var(--gold-color)';
-            this.style.color = 'white';
-        });
-        
-        button.addEventListener('mouseout', function() {
-            this.style.transform = '';
-            this.style.boxShadow = '';
-            this.style.backgroundColor = '';
-            this.style.color = '';
-        });
-    });
+    // Add sparkle effect to the page
+    addSparkleEffect();
     
-    // Add calendar day hover effects
-    addCalendarEffects();
+    // Highlight the wedding date with special effects
+    highlightWeddingDate();
 }
 
-// Function to add calendar effects
-function addCalendarEffects() {
-    // Add hover effects to calendar days
-    const days = document.querySelectorAll('.day:not(.empty)');
-    days.forEach(day => {
-        day.addEventListener('mouseover', function() {
-            if (!this.classList.contains('wedding-day')) {
-                this.style.transform = 'translateY(-2px)';
-                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-            }
+// Function to add sparkle effect to the page
+function addSparkleEffect() {
+    // Create sparkles container
+    const sparklesContainer = document.createElement('div');
+    sparklesContainer.className = 'sparkles-container';
+    sparklesContainer.style.position = 'absolute';
+    sparklesContainer.style.top = '0';
+    sparklesContainer.style.left = '0';
+    sparklesContainer.style.width = '100%';
+    sparklesContainer.style.height = '100%';
+    sparklesContainer.style.pointerEvents = 'none';
+    sparklesContainer.style.overflow = 'hidden';
+    sparklesContainer.style.zIndex = '50';
+    
+    document.querySelector('.border-design').appendChild(sparklesContainer);
+    
+    // Create random sparkles
+    const createSparkle = () => {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Random position
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        sparkle.style.left = `${posX}%`;
+        sparkle.style.top = `${posY}%`;
+        
+        // Random size
+        const size = Math.random() * 6 + 2;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+        
+        // Random animation delay
+        const delay = Math.random() * 3;
+        sparkle.style.animationDelay = `${delay}s`;
+        
+        // Random animation duration
+        const duration = Math.random() * 2 + 2;
+        sparkle.style.animationDuration = `${duration}s`;
+        
+        sparklesContainer.appendChild(sparkle);
+        
+        // Remove sparkle after animation completes
+        setTimeout(() => {
+            sparkle.remove();
+        }, duration * 1000);
+    };
+    
+    // Create initial sparkles
+    for (let i = 0; i < 15; i++) {
+        createSparkle();
+    }
+    
+    // Create new sparkles periodically
+    setInterval(() => {
+        createSparkle();
+    }, 500);
+    
+    // Add sparkles on mouse move
+    document.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.9) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            // Position at mouse cursor
+            const rect = sparklesContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            
+            // Random size
+            const size = Math.random() * 6 + 2;
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            
+            sparklesContainer.appendChild(sparkle);
+            
+            // Remove sparkle after animation completes
+            setTimeout(() => {
+                sparkle.remove();
+            }, 3000);
+        }
+    });
+}
+
+// Function to highlight the wedding date
+function highlightWeddingDate() {
+    const dateElement = document.querySelector('.date');
+    if (dateElement) {
+        // Add pulsing effect on hover
+        dateElement.addEventListener('mouseover', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.transition = 'transform 0.3s ease';
         });
         
-        day.addEventListener('mouseout', function() {
-            if (!this.classList.contains('wedding-day')) {
-                this.style.transform = '';
-                this.style.boxShadow = '';
-            }
+        dateElement.addEventListener('mouseout', function() {
+            this.style.transform = 'scale(1)';
         });
-    });
-    
-    // Add special effects to wedding day
-    const weddingDay = document.querySelector('.wedding-day');
-    if (weddingDay) {
-        // Add pulsing animation
-        const pulseAnimation = document.createElement('style');
-        pulseAnimation.textContent = `
-            @keyframes wedding-day-pulse {
-                0% { box-shadow: 0 0 5px rgba(183, 110, 121, 0.3); }
-                50% { box-shadow: 0 0 15px rgba(183, 110, 121, 0.5); }
-                100% { box-shadow: 0 0 5px rgba(183, 110, 121, 0.3); }
-            }
-            .heart-highlight {
-                animation: wedding-day-pulse 2s infinite;
-            }
-        `;
-        document.head.appendChild(pulseAnimation);
+        
+        // Add CSS class for heart beat animation
+        if (!document.querySelector('#date-pulse-style')) {
+            const style = document.createElement('style');
+            style.id = 'date-pulse-style';
+            style.textContent = `
+                @keyframes heartbeat {
+                    0% { transform: scale(1); }
+                    14% { transform: scale(1.1); }
+                    28% { transform: scale(1); }
+                    42% { transform: scale(1.15); }
+                    70% { transform: scale(1); }
+                }
+                .heartbeat {
+                    animation: heartbeat 2s ease infinite;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Add heartbeat animation
+        dateElement.classList.add('heartbeat');
+    }
+}
+
+// Function to animate the '&' symbol to change to ring and then heart
+function animateAndSymbol() {
+    const andElement = document.querySelector('.and span');
+    if (andElement) {
+        // Wait for page to load
+        setTimeout(() => {
+            // Change to ring emoji
+            andElement.textContent = '💍';
+            andElement.style.fontSize = '2.5rem';
+            
+            // Then change to heart after another delay
+            setTimeout(() => {
+                andElement.textContent = '❤️';
+                andElement.style.fontSize = '2.5rem';
+                
+                // Add pulsing animation to heart
+                andElement.style.animation = 'heartbeat 2s ease infinite';
+            }, 2000);
+        }, 2000);
     }
 }
