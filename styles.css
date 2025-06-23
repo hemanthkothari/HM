@@ -1,0 +1,793 @@
+/* Wedding Save the Date Styles */
+:root {
+    /* Color Palette */
+    --primary-color: #a8071a;
+    --gold-color: #d4af37;
+    --rose-gold: #b76e79;
+    --teal-color: #2a8e82;
+    --turquoise: #40e0d0;
+    --text-color: #5a3921;
+    --light-text: #7d5a3c;
+    --bg-color: #ffffff;
+    --white-bg: rgba(255, 255, 255, 0.95);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --gold-shadow: rgba(212, 175, 55, 0.5);
+    
+    /* Calendar Colors */
+    --calendar-border: #d4af37;
+    --calendar-day-bg: rgba(255, 255, 255, 0.7);
+    --calendar-wedding-day-bg: rgba(183, 110, 121, 0.15);
+    --calendar-wedding-day-border: #b76e79;
+    --logo-color: #2a8e82;
+    
+    /* Responsive font sizes using clamp */
+    --h1-size: clamp(2rem, 6vw, 3.8rem);
+    --h2-size: clamp(1.3rem, 5vw, 2.2rem);
+    --h3-size: clamp(1.1rem, 4vw, 1.8rem);
+    --normal-text: clamp(0.9rem, 3vw, 1.2rem);
+    --small-text: clamp(0.7rem, 2vw, 0.9rem);
+    
+    /* Spacing */
+    --container-padding: clamp(10px, 3vw, 20px);
+    --content-padding: clamp(15px, 4vw, 30px);
+    --section-spacing: clamp(20px, 5vw, 40px);
+    --item-spacing: clamp(10px, 2vw, 20px);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Language Toggle */
+.language-toggle {
+    position: fixed;
+    top: clamp(10px, 3vw, 20px);
+    right: clamp(10px, 3vw, 20px);
+    z-index: 1000;
+}
+
+.language-capsule {
+    display: flex;
+    background-color: var(--white-bg);
+    border: 2px solid var(--gold-color);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    transition: all 0.3s ease;
+}
+
+.lang-btn {
+    padding: clamp(6px, 2vw, 10px) clamp(10px, 3vw, 16px);
+    border: none;
+    background: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.lang-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 500;
+}
+
+.language-capsule:hover {
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transform: translateY(-2px);
+}
+
+/* Floating Download Button */
+.download-button {
+    position: fixed;
+    bottom: clamp(15px, 4vw, 30px);
+    right: clamp(15px, 4vw, 30px);
+    background-color: var(--primary-color);
+    color: white;
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border: 2px solid var(--gold-color);
+}
+
+.download-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    background-color: #8a0615;
+}
+
+.download-button svg {
+    width: clamp(16px, 5vw, 20px);
+    height: clamp(16px, 5vw, 20px);
+}
+
+.download-button span {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+}
+
+/* Download Success Message */
+.download-success {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 128, 0, 0.9);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 1100;
+    transition: opacity 0.5s ease;
+    border: 1px solid #d4af37;
+}
+
+/* PDF Generation Specific Styles */
+@media print {
+    .download-button {
+        display: none;
+    }
+    
+    body {
+        background: none;
+        background-color: white;
+    }
+    
+    .container {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* Class added during PDF generation */
+.generating-pdf .download-button {
+    display: none;
+}
+
+body {
+    font-family: 'Playfair Display', serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    background-image: url('images/mandala.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.92);
+    z-index: -1;
+}
+
+.container {
+    max-width: min(95vw, 1200px);
+    margin: clamp(10px, 3vh, 25px) auto;
+    padding: var(--container-padding);
+}
+
+/* Couple Names Header */
+.couple-names-header {
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+}
+
+.couple-names-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--h2-size);
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0;
+    line-height: 1.3;
+    text-align: center;
+}
+
+.couple-names-header .and-symbol {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: var(--gold-color);
+    position: relative;
+    margin: 0 10px;
+}
+
+/* Save the Date Container - Main Layout */
+.save-date-container {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: var(--white-bg);
+    box-shadow: 0 10px 30px var(--shadow-color);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Left Section: Photo Frame */
+.photo-section {
+    flex: 1;
+    min-width: 300px;
+    padding: var(--content-padding);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Right Section: Event Details */
+.details-section {
+    flex: 1;
+    min-width: 300px;
+    padding: var(--content-padding);
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-left: 1px solid rgba(212, 175, 55, 0.3);
+    position: relative;
+}
+
+/* Decorative background pattern for the details section */
+.details-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='none' stroke='%232a8e82' stroke-width='0.5' d='M10,10 L90,10 L90,90 L10,90 Z'/%3E%3Cpath fill='none' stroke='%232a8e82' stroke-width='0.3' d='M20,20 L80,20 L80,80 L20,80 Z'/%3E%3C/svg%3E");
+    background-size: 100px 100px;
+    opacity: 0.05;
+    z-index: 0;
+}
+
+/* Octagonal Frame Styles */
+.octagon-frame {
+    position: relative;
+    width: 80%;
+    max-width: 400px;
+    aspect-ratio: 1/1;
+    margin: 0 auto 30px;
+}
+
+.frame-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    background: linear-gradient(45deg, var(--gold-color), #f5d76e, var(--gold-color));
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.photo-container {
+    width: 100%;
+    height: 100%;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    position: relative;
+}
+
+.couple-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.couple-photo:hover {
+    transform: scale(1.05);
+}
+
+/* Save Our Date Text */
+.save-our-date {
+    font-family: 'Dancing Script', cursive;
+    font-size: var(--h1-size);
+    color: var(--rose-gold);
+    margin-top: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.save-our-date::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold-color), transparent);
+    margin: 10px auto 0;
+}
+
+/* Calendar Widget Styles */
+.calendar-widget {
+    margin: 20px 0 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.calendar-header {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.calendar-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--h3-size);
+    color: var(--text-color);
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.calendar-header h3::after {
+    content: '';
+    display: block;
+    width: 50%;
+    height: 2px;
+    background-color: var(--gold-color);
+    margin: 5px auto 0;
+}
+
+.calendar-grid {
+    border: 1px solid var(--gold-color);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid var(--gold-color);
+}
+
+.weekday {
+    padding: 8px 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    color: var(--text-color);
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.day {
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+    border-right: 1px solid rgba(212, 175, 55, 0.2);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    position: relative;
+}
+
+.day:nth-child(7n) {
+    border-right: none;
+}
+
+.day.empty {
+    background-color: rgba(248, 248, 248, 0.5);
+}
+
+.day.wedding-day {
+    position: relative;
+    z-index: 2;
+}
+
+.heart-highlight {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    color: var(--rose-gold);
+    font-weight: 700;
+}
+
+.heart-highlight::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    background-color: rgba(183, 110, 121, 0.15);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.heart-highlight::after {
+    content: '❤';
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.8rem;
+    color: var(--rose-gold);
+}
+
+/* Event Details Styles */
+.event-details {
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.date-info {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.day-of-week {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--normal-text);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.date {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--h3-size);
+    color: var(--rose-gold);
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.venue-info {
+    text-align: center;
+    padding: 15px 0;
+    border-top: 1px solid rgba(212, 175, 55, 0.3);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.venue-name {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--normal-text);
+    color: var(--text-color);
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.venue-address {
+    font-family: 'Poppins', sans-serif;
+    font-size: var(--small-text);
+    color: var(--light-text);
+    margin-top: 5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.rsvp-info {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.rsvp-label {
+    font-family: 'Playfair Display', serif;
+    font-size: var(--small-text);
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.rsvp-date {
+    font-family: 'Poppins', sans-serif;
+    font-size: var(--normal-text);
+    color: var(--rose-gold);
+    margin-top: 5px;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid var(--gold-color);
+    border-radius: 30px;
+    background-color: white;
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    font-size: var(--small-text);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: var(--gold-color);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn i {
+    font-size: 1rem;
+}
+
+/* Animation for language change */
+.fade-transition {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Styles */
+@media (max-width: 992px) {
+    .save-date-container {
+        flex-direction: column;
+    }
+    
+    .photo-section, .details-section {
+        min-width: 100%;
+    }
+    
+    .details-section {
+        border-left: none;
+        border-top: 1px solid rgba(212, 175, 55, 0.3);
+    }
+    
+    .octagon-frame {
+        width: 60%;
+        max-width: 300px;
+    }
+    
+    .couple-names-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .couple-names-header h2 {
+        font-size: clamp(1.2rem, 4.5vw, 2rem);
+    }
+    
+    .save-our-date {
+        font-size: clamp(1.8rem, 5vw, 3rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Hide text in download button, show only icon */
+    .download-button {
+        padding: clamp(10px, 3vw, 15px);
+        border-radius: 50%;
+        width: clamp(45px, 12vw, 55px);
+        height: clamp(45px, 12vw, 55px);
+        justify-content: center;
+    }
+    
+    .download-button span {
+        display: none;
+    }
+    
+    .weekday {
+        font-size: clamp(0.7rem, 2vw, 0.9rem);
+        padding: 5px 0;
+    }
+    
+    .day {
+        font-size: clamp(0.8rem, 2.5vw, 1rem);
+    }
+    
+    .venue-name {
+        font-size: clamp(0.9rem, 3vw, 1.1rem);
+    }
+    
+    .venue-address {
+        font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+    }
+    
+    .date-info .date {
+        font-size: clamp(1rem, 3.5vw, 1.5rem);
+    }
+    
+    .container {
+        margin: clamp(10px, 3vh, 30px) auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .octagon-frame {
+        width: 85%;
+        max-width: 250px;
+    }
+    
+    .save-our-date {
+        font-size: clamp(1.6rem, 6vw, 2.2rem);
+        margin-top: 15px;
+    }
+    
+    .couple-names-header h2 {
+        font-size: clamp(1.1rem, 4.5vw, 1.6rem);
+    }
+    
+    .couple-names-header .and-symbol {
+        font-size: clamp(1.4rem, 6vw, 2.2rem);
+    }
+    
+    .calendar-header h3 {
+        font-size: clamp(0.9rem, 4vw, 1.3rem);
+    }
+    
+    .weekday {
+        font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+        padding: 3px 0;
+    }
+    
+    .day {
+        font-size: clamp(0.7rem, 3vw, 0.9rem);
+    }
+    
+    .heart-highlight::after {
+        font-size: 0.6rem;
+        top: -3px;
+        right: -3px;
+    }
+    
+    .date-info, .venue-info, .rsvp-info {
+        padding: 8px 0;
+    }
+    
+    .action-btn {
+        padding: 8px 12px;
+        font-size: clamp(0.7rem, 3vw, 0.8rem);
+    }
+    
+    .venue-name {
+        font-size: clamp(0.8rem, 3.5vw, 1rem);
+        letter-spacing: 0.5px;
+    }
+    
+    .venue-address {
+        font-size: clamp(0.6rem, 3vw, 0.8rem);
+        letter-spacing: 1px;
+    }
+    
+    .rsvp-label {
+        font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    }
+    
+    .rsvp-date {
+        font-size: clamp(0.8rem, 3vw, 0.9rem);
+    }
+    
+    .day-of-week {
+        font-size: clamp(0.8rem, 3vw, 1rem);
+    }
+    
+    .date {
+        font-size: clamp(0.9rem, 4vw, 1.3rem);
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 375px) {
+    .couple-names-header h2 {
+        font-size: clamp(1rem, 5vw, 1.4rem);
+    }
+    
+    .couple-names-header .and-symbol {
+        font-size: clamp(1.2rem, 7vw, 2rem);
+    }
+    
+    .save-our-date {
+        font-size: clamp(1.4rem, 7vw, 2rem);
+    }
+    
+    .octagon-frame {
+        width: 90%;
+    }
+    
+    .calendar-header h3 {
+        font-size: clamp(0.8rem, 4.5vw, 1.2rem);
+    }
+    
+    .weekday {
+        font-size: clamp(0.5rem, 3vw, 0.7rem);
+        padding: 2px 0;
+    }
+    
+    .day {
+        font-size: clamp(0.6rem, 3.5vw, 0.8rem);
+    }
+    
+    .venue-name {
+        font-size: clamp(0.7rem, 4vw, 0.9rem);
+    }
+    
+    .venue-address {
+        font-size: clamp(0.5rem, 3.5vw, 0.7rem);
+    }
+    
+    .date {
+        font-size: clamp(0.8rem, 4.5vw, 1.1rem);
+    }
+    
+    .action-btn {
+        padding: 6px 10px;
+        font-size: clamp(0.6rem, 3.5vw, 0.7rem);
+    }
+    
+    .action-btn i {
+        font-size: 0.9rem;
+    }
+}
