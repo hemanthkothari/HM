@@ -219,8 +219,8 @@ function setupLanguageToggle() {
     const langHi = document.getElementById('langHi');
     
     if (langEn && langHi) {
-        // Set initial language from localStorage or default to English
-        const savedLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        // Set initial language from localStorage or default to Hindi
+        const savedLanguage = localStorage.getItem('preferredLanguage') || 'hi';
         
         // Set active button based on saved language
         if (savedLanguage === 'en') {
@@ -361,7 +361,7 @@ function applyTransitionEffect(element, newText) {
 
 // Function to get current language
 function getCurrentLanguage() {
-    return localStorage.getItem('preferredLanguage') || 'en';
+    return localStorage.getItem('preferredLanguage') || 'hi';
 }
 
 // Function to add decorative elements and animations
@@ -731,18 +731,94 @@ function setupLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
     
     if (loadingScreen) {
-        // Show loading screen for 3 seconds, then fade out
+        // Show loading screen for 3 seconds, then morph out
         setTimeout(() => {
-            // Start fade out animation
-            loadingScreen.classList.add('fade-out');
+            // Start morph out animation
+            loadingScreen.classList.add('morph-out');
             
             // Show main content
             document.body.classList.add('content-loaded');
             
-            // Remove loading screen from DOM after fade out completes
+            // Start flowing flowers after loading screen starts morphing
             setTimeout(() => {
-                loadingScreen.remove();
-            }, 1000); // Wait for fade out animation to complete
-        }, 2000); // Show loading screen for 2 seconds
+                startFlowingFlowers();
+            }, 500);
+            
+            // Remove loading screen from DOM after morph completes
+            setTimeout(() => {
+                if (loadingScreen && loadingScreen.parentNode) {
+                    loadingScreen.remove();
+                }
+            }, 2000); // Wait for morph animation to complete
+        }, 3000); // Show loading screen for 3 seconds
     }
+}
+
+// Function to start continuous flowing flowers
+function startFlowingFlowers() {
+    const flowingFlowersContainer = document.getElementById('flowingFlowers');
+    if (!flowingFlowersContainer) return;
+    
+    const flowerTypes = ['flower-petal', 'rose-flower', 'lotus-flower'];
+    const speeds = ['flower-slow', 'flower-medium', 'flower-fast'];
+    
+    // Function to create a single flower
+    function createFlower() {
+        const flower = document.createElement('div');
+        flower.className = 'flower';
+        
+        // Create flower element based on type
+        const flowerType = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
+        const flowerElement = document.createElement('div');
+        flowerElement.className = flowerType;
+        flower.appendChild(flowerElement);
+        
+        // Random horizontal position
+        flower.style.left = `${Math.random() * 100}%`;
+        
+        // Random speed
+        const speed = speeds[Math.floor(Math.random() * speeds.length)];
+        flower.classList.add(speed);
+        
+        // Random animation delay
+        flower.style.animationDelay = `${Math.random() * 2}s`;
+        
+        // Random rotation
+        flower.style.transform = `rotate(${Math.random() * 360}deg)`;
+        
+        // Add to container
+        flowingFlowersContainer.appendChild(flower);
+        
+        // Remove flower after animation completes
+        const animationDuration = speed === 'flower-slow' ? 15000 : 
+                                speed === 'flower-medium' ? 12000 : 8000;
+        
+        setTimeout(() => {
+            if (flower && flower.parentNode) {
+                flower.remove();
+            }
+        }, animationDuration + 2000);
+    }
+    
+    // Create initial flowers
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            createFlower();
+        }, i * 1000);
+    }
+    
+    // Create new flowers continuously
+    setInterval(() => {
+        createFlower();
+    }, 2000); // New flower every 2 seconds
+    
+    // Create bursts of flowers occasionally
+    setInterval(() => {
+        const burstCount = Math.floor(Math.random() * 3) + 2; // 2-4 flowers
+        for (let i = 0; i < burstCount; i++) {
+            setTimeout(() => {
+                createFlower();
+            }, i * 200);
+        }
+    }, 10000); // Burst every 10 seconds
 }
