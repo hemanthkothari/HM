@@ -731,25 +731,25 @@ function setupLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
     
     if (loadingScreen) {
-        // Show loading screen for 3 seconds, then morph out
+        // Show loading screen for 3 seconds, then fade out
         setTimeout(() => {
-            // Start morph out animation
-            loadingScreen.classList.add('morph-out');
+            // Start fade out animation
+            loadingScreen.classList.add('fade-out');
             
             // Show main content
             document.body.classList.add('content-loaded');
             
-            // Start flowing flowers after loading screen starts morphing
+            // Start flowing flowers after loading screen starts fading
             setTimeout(() => {
                 startFlowingFlowers();
             }, 500);
             
-            // Remove loading screen from DOM after morph completes
+            // Remove loading screen from DOM after fade completes
             setTimeout(() => {
                 if (loadingScreen && loadingScreen.parentNode) {
                     loadingScreen.remove();
                 }
-            }, 2000); // Wait for morph animation to complete
+            }, 1000); // Wait for fade animation to complete
         }, 3000); // Show loading screen for 3 seconds
     }
 }

@@ -21,6 +21,39 @@
     --content-padding: clamp(15px, 4vw, 30px);
     --section-spacing: clamp(20px, 5vw, 40px);
     --item-spacing: clamp(10px, 2vw, 20px);
+    
+    /* Force light mode colors - prevent dark mode from affecting our design */
+    color-scheme: light only;
+}
+
+/* Prevent system dark mode from affecting our colors */
+html {
+    color-scheme: light only;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Override any potential dark mode changes - maintain our wedding theme colors */
+        --primary-color: #a8071a !important;
+        --gold-color: #d4af37 !important;
+        --text-color: #5a3921 !important;
+        --light-text: #7d5a3c !important;
+        --bg-color: #f8f3e9 !important;
+        --white-bg: rgba(255, 255, 255, 0.9) !important;
+        --shadow-color: rgba(0, 0, 0, 0.1) !important;
+        --gold-shadow: rgba(212, 175, 55, 0.5) !important;
+    }
+    
+    /* Ensure body maintains light theme in dark mode */
+    body {
+        background-color: var(--bg-color) !important;
+        color: var(--text-color) !important;
+    }
+    
+    /* Force all elements to use light theme colors */
+    * {
+        color-scheme: light only !important;
+    }
 }
 
 * {
@@ -38,15 +71,37 @@
     height: 100%;
     background-color: var(--bg-color);
     background-image: url('images/mandala.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-size: contain;
+    background-position: center center;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
     transition: opacity 1s ease-out;
+}
+
+/* Responsive mandala sizing for loading screen */
+@media (max-width: 768px) {
+    .loading-screen {
+        background-size: cover;
+        background-position: center center;
+    }
+}
+
+@media (orientation: portrait) and (max-width: 768px) {
+    .loading-screen {
+        background-size: cover;
+        background-position: center center;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    .loading-screen {
+        background-size: contain;
+        background-position: center center;
+    }
 }
 
 .loading-screen::before {
@@ -106,36 +161,10 @@
     opacity: 1;
 }
 
-/* Loading screen morph out */
-.loading-screen.morph-out {
-    animation: morphTransition 2s ease-in-out forwards;
+/* Loading screen fade out */
+.loading-screen.fade-out {
+    opacity: 0;
     pointer-events: none;
-}
-
-@keyframes morphTransition {
-    0% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-        border-radius: 0%;
-    }
-    30% {
-        transform: scale(1.1) rotate(90deg);
-        border-radius: 20%;
-    }
-    60% {
-        transform: scale(0.8) rotate(180deg);
-        border-radius: 50%;
-    }
-    80% {
-        transform: scale(1.2) rotate(270deg);
-        border-radius: 80%;
-        opacity: 0.5;
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.1) rotate(360deg);
-        border-radius: 100%;
-    }
 }
 
 /* Flowing flowers animation */
@@ -454,15 +483,37 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     background-image: url('images/mandala.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-size: contain;
+    background-position: center center;
+    background-attachment: scroll;
     background-repeat: no-repeat;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
+}
+
+/* Responsive mandala sizing for main body */
+@media (max-width: 768px) {
+    body {
+        background-size: cover;
+        background-position: center center;
+    }
+}
+
+@media (orientation: portrait) and (max-width: 768px) {
+    body {
+        background-size: cover;
+        background-position: center center;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+    body {
+        background-size: contain;
+        background-position: center center;
+    }
 }
 
 body::before {
