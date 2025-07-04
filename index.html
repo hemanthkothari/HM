@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hemanth & Minakashi - Save the Date</title>
+    <link rel="icon" type="image/svg+xml" href="images/H & M Logo.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
     <!-- Add html2pdf library for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <img src="images/H & M Logo.svg" alt="H & M Logo" class="loading-logo">
+        </div>
+    </div>
+
+    <!-- Audio Element for Background Music -->
+    <audio id="backgroundMusic" loop preload="auto">
+        <source src="SAVE THE DATE.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- Language Toggle -->
     <div class="language-toggle">
         <div class="language-capsule">
@@ -23,6 +34,14 @@
         </div>
     </div>
     
+    <!-- Music Toggle Button -->
+    <div class="music-toggle" id="musicToggle">
+        <svg id="musicIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+    </div>
     <!-- Floating download button -->
     <div class="download-button" id="downloadBtn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -33,133 +52,83 @@
         <span data-en="Download Invitation" data-hi="निमंत्रण डाउनलोड करें">Download Invitation</span>
     </div>
     
+    <!-- Add to Calendar button -->
+    <div class="calendar-button" id="calendarBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+            <path d="M8 14h8"></path>
+            <path d="M8 18h8"></path>
+        </svg>
+        <span data-en="Add to Calendar" data-hi="कैलेंडर में जोड़ें">Add to Calendar</span>
+    </div>
+    
     <div class="container" id="invitation-content">
-        <!-- Couple Names Header -->
-        <div class="couple-names-header">
-            <h2 data-en="Hemanth Kothari" data-hi="हेमंत कोठारी">Hemanth Kothari</h2>
-            <div class="and-symbol">&</div>
-            <h2 data-en="Minakashi Rampuria" data-hi="मीनाक्षी रामपुरिया">Minakashi Rampuria</h2>
-        </div>
-        
-        <div class="save-date-container">
-            <!-- Left Section: Photo Frame -->
-            <div class="photo-section">
-                <div class="octagon-frame">
-                    <div class="frame-border">
-                        <div class="photo-container">
-                            <img src="images/ganesha.jpg" alt="Couple Photo" class="couple-photo">
-                        </div>
-                    </div>
+        <div class="border-design">
+            <div class="content">
+                <div class="ganesha-container">
+                    <img src="images/ganesha.jpg" alt="Lord Ganesha" class="ganesha-image">
                 </div>
-                <h1 class="save-our-date" data-en="Save Our Date" data-hi="हमारी तिथि सुरक्षित रखें">Save Our Date</h1>
-            </div>
-            
-            <!-- Right Section: Event Details -->
-            <div class="details-section">
                 
-                <!-- Calendar Widget -->
-                <div class="calendar-widget">
-                    <div class="calendar-header">
-                        <div class="date-info">
-                        <div class="day-of-week" data-en="Sunday" data-hi="रविवार">Sunday</div>
-                        <div class="date" data-en="November 2, 2025" data-hi="नवंबर 2, 2025">November 2, 2025</div>
-                    </div>
-                    </div>
-                    <div class="calendar-grid">
-                        <div class="weekday-row">
-                            <div class="weekday" data-en="S" data-hi="र">S</div>
-                            <div class="weekday" data-en="M" data-hi="सो">M</div>
-                            <div class="weekday" data-en="T" data-hi="मं">T</div>
-                            <div class="weekday" data-en="W" data-hi="बु">W</div>
-                            <div class="weekday" data-en="T" data-hi="गु">T</div>
-                            <div class="weekday" data-en="F" data-hi="शु">F</div>
-                            <div class="weekday" data-en="S" data-hi="श">S</div>
+                <div class="invitation-text">
+                    <h1 class="save-the-date" data-en="Save the Date" data-hi="इस शुभ दिन में शामिल हों">Save the Date</h1>
+                    <div class="hashtag">#kotharigotrampuria</div>
+                    
+                    <div class="names-container">
+                        <div class="groom">
+                            <h2 data-en="Hemanth Kothari" data-hi="हेमंत कोठारी">Hemanth Kothari</h2>
+                            <p data-en="S/o Santosh Devi Kishor Kumar Ji Kothari" data-hi="संतोष देवी किशोर कुमार जी कोठारी के पुत्र">S/o Santosh Devi Kishor Kumar Ji Kothari</p>
                         </div>
-                        <div class="days-grid">
-                            <!-- Week 1 -->
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day">1</div>
-                            
-                            <!-- Week 2 -->
-                            <div class="day wedding-day">
-                                <div class="heart-highlight">
-                                    <span>2</span>
-                                </div>
+                        
+                        <div class="and">
+                            <span>&</span>
+                        </div>
+                        
+                        <div class="bride">
+                            <h2 data-en="Minakashi Rampuria" data-hi="मीनाक्षी रामपुरिया">Minakashi Rampuria</h2>
+                            <p data-en="D/o Kiran Devi Pradeep Kumar Ji Rampuria" data-hi="किरण देवी प्रदीप कुमार जी रामपुरिया की पुत्री">D/o Kiran Devi Pradeep Kumar Ji Rampuria</p>
+                        </div>
+                    </div>
+                    
+                    <div class="wedding-details">
+                        <h3 data-en="We are getting married" data-hi="हम विवाह के बंधन में बंधने जा रहे हैं, शादी मे जरूर पधारना सा">We are getting married</h3>
+                        <div class="date" data-en="November 2, 2025" data-hi="2 नवंबर, 2025">
+                            <span class="sparkle-left">✨</span>
+                            November 2, 2025
+                        </div>
+                        <div class="location" data-en="Bikaner, Rajasthan" data-hi="बीकानेर, राजस्थान">Bikaner, Rajasthan</div>
+                    </div>
+                    
+                    <div class="countdown-container">
+                        <h3 data-en="Countdown to the Big Day" data-hi="उस खास दिन की उलटी गिनती">Countdown to the Big Day</h3>
+                        <div id="countdown" class="countdown">
+                            <div class="countdown-item">
+                                <span id="days">00</span>
+                                <span class="label" data-en="Days" data-hi="दिन">Days</span>
                             </div>
-                            <div class="day">3</div>
-                            <div class="day">4</div>
-                            <div class="day">5</div>
-                            <div class="day">6</div>
-                            <div class="day">7</div>
-                            <div class="day">8</div>
-                            
-                            <!-- Week 3 -->
-                            <div class="day">9</div>
-                            <div class="day">10</div>
-                            <div class="day">11</div>
-                            <div class="day">12</div>
-                            <div class="day">13</div>
-                            <div class="day">14</div>
-                            <div class="day">15</div>
-                            
-                            <!-- Week 4 -->
-                            <div class="day">16</div>
-                            <div class="day">17</div>
-                            <div class="day">18</div>
-                            <div class="day">19</div>
-                            <div class="day">20</div>
-                            <div class="day">21</div>
-                            <div class="day">22</div>
-                            
-                            <!-- Week 5 -->
-                            <div class="day">23</div>
-                            <div class="day">24</div>
-                            <div class="day">25</div>
-                            <div class="day">26</div>
-                            <div class="day">27</div>
-                            <div class="day">28</div>
-                            <div class="day">29</div>
-                            
-                            <!-- Week 6 -->
-                            <div class="day">30</div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
-                            <div class="day empty"></div>
+                            <div class="countdown-item">
+                                <span id="hours">00</span>
+                                <span class="label" data-en="Hours" data-hi="घंटे">Hours</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span id="minutes">00</span>
+                                <span class="label" data-en="Minutes" data-hi="मिनट">Minutes</span>
+                            </div>
+                            <div class="countdown-item">
+                                <span id="seconds">00</span>
+                                <span class="label" data-en="Seconds" data-hi="सेकंड">Seconds</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Event Details -->
-                <div class="event-details">
                     
-                    
-                    <div class="venue-info">
-                        <div class="venue-name" data-en="ROYAL WEDDING VENUE" data-hi="रॉयल वेडिंग वेन्यू">ROYAL WEDDING VENUE</div>
-                        <div class="venue-address" data-en="BIKANER, RAJASTHAN" data-hi="बीकानेर, राजस्थान">BIKANER, RAJASTHAN</div>
+                    <div class="sanskrit-verse">
+                        <p>सर्वमंगल मांगल्ये शिवे सर्वार्थ साधिके</p>
                     </div>
                     
-                    <div class="rsvp-info">
-                        <div class="rsvp-label" data-en="RSVP BY:" data-hi="कृपया उत्तर दें:">RSVP BY:</div>
-                        <div class="rsvp-date" data-en="October 1, 2025" data-hi="अक्टूबर 1, 2025">October 1, 2025</div>
-                    </div>
-                    
-                    <div class="action-buttons">
-                        <button class="action-btn add-calendar">
-                            <i class="fas fa-calendar-plus"></i>
-                            <span data-en="Add to Calendar" data-hi="कैलेंडर में जोड़ें">Add to Calendar</span>
-                        </button>
-                        <button class="action-btn share-btn">
-                            <i class="fas fa-share-alt"></i>
-                            <span data-en="Share" data-hi="शेयर करें">Share</span>
-                        </button>
+                    <div class="footer">
+                        <p data-en="Formal invitation to follow" data-hi="औपचारिक निमंत्रण जल्द ही">Formal invitation to follow</p>
                     </div>
                 </div>
             </div>

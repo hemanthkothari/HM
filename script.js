@@ -1,7 +1,13 @@
 // Countdown Timer for Wedding Date
 document.addEventListener('DOMContentLoaded', function() {
+    // Setup loading screen
+    setupLoadingScreen();
+    
     // Set the wedding date - November 2, 2025
     const weddingDate = new Date('November 2, 2025 00:00:00').getTime();
+    
+    // Setup background music
+    setupBackgroundMusic();
     
     // Setup PDF download functionality
     setupPdfDownload();
@@ -12,8 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup location click to search
     setupLocationClick();
     
-    // Setup wedding day click to add to calendar
-    setupWeddingDayClick();
+    // Setup date click to add to calendar
+    setupDateClick();
+    
+    // Setup calendar button
+    setupCalendarButton();
     
     // Update the countdown every second
     const countdownTimer = setInterval(function() {
@@ -60,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to setup location click to search
 function setupLocationClick() {
-    const locationElement = document.querySelector('.venue-address');
+    const locationElement = document.querySelector('.location');
     if (locationElement) {
         locationElement.style.cursor = 'pointer';
         locationElement.title = 'Click to see images of Bikaner, Rajasthan';
@@ -68,7 +77,7 @@ function setupLocationClick() {
         // Add hover effect
         locationElement.addEventListener('mouseover', function() {
             this.style.textDecoration = 'underline';
-            this.style.color = 'var(--rose-gold)';
+            this.style.color = 'var(--primary-color)';
         });
         
         locationElement.addEventListener('mouseout', function() {
@@ -84,74 +93,25 @@ function setupLocationClick() {
     }
 }
 
-// Function to setup wedding day click to add to calendar
-function setupWeddingDayClick() {
-    const weddingDayElement = document.querySelector('.wedding-day');
-    const addCalendarBtn = document.querySelector('.add-calendar');
-    
-    // Setup add to calendar functionality
-    const addToCalendar = function() {
-        // Create Google Calendar link
-        const eventTitle = 'Wedding of Hemanth and Minakashi';
-        const eventLocation = 'Bikaner, Rajasthan';
-        const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
-        const eventDate = '20251102'; // YYYYMMDD format
+// Function to setup date click to add to calendar
+function setupDateClick() {
+    const dateElement = document.querySelector('.date');
+    if (dateElement) {
+        dateElement.style.cursor = 'pointer';
+        dateElement.title = 'Click to add to your calendar';
         
-        // Set as all-day event
-        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
-        
-        window.open(googleCalendarUrl, '_blank');
-    };
-    
-    // Add event listener to wedding day in calendar
-    if (weddingDayElement) {
-        weddingDayElement.style.cursor = 'pointer';
-        weddingDayElement.title = 'Click to add to your calendar';
-        weddingDayElement.addEventListener('click', addToCalendar);
-    }
-    
-    // Add event listener to Add to Calendar button
-    if (addCalendarBtn) {
-        addCalendarBtn.addEventListener('click', addToCalendar);
-    }
-    
-    // Setup share button functionality
-    const shareBtn = document.querySelector('.share-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Wedding Invitation - Hemanth & Minakashi',
-                    text: 'You are invited to the wedding of Hemanth & Minakashi on November 2, 2025',
-                    url: window.location.href
-                })
-                .catch(error => console.log('Error sharing:', error));
-            } else {
-                // Fallback for browsers that don't support Web Share API
-                const dummy = document.createElement('input');
-                document.body.appendChild(dummy);
-                dummy.value = window.location.href;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-                
-                // Show a success message
-                const successMsg = document.createElement('div');
-                successMsg.className = 'download-success';
-                successMsg.textContent = getCurrentLanguage() === 'hi' ? 
-                    'लिंक कॉपी किया गया!' : 
-                    'Link copied to clipboard!';
-                
-                document.body.appendChild(successMsg);
-                
-                // Remove the success message after 3 seconds
-                setTimeout(() => {
-                    successMsg.style.opacity = '0';
-                    setTimeout(() => {
-                        document.body.removeChild(successMsg);
-                    }, 500);
-                }, 2500);
-            }
+        // Add click event to add to calendar
+        dateElement.addEventListener('click', function() {
+            // Create Google Calendar link
+            const eventTitle = 'Wedding of Hemanth and Minakashi';
+            const eventLocation = 'Bikaner, Rajasthan';
+            const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
+            const eventDate = '20251102'; // YYYYMMDD format
+            
+            // Set as all-day event
+            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
+            
+            window.open(googleCalendarUrl, '_blank');
         });
     }
 }
@@ -201,33 +161,6 @@ function adjustResponsiveElements() {
                     labelElement.style.fontSize = '';
                 }
             });
-        }
-    }
-    
-    // Adjust calendar based on screen width
-    const calendarGrid = document.querySelector('.calendar-grid');
-    if (calendarGrid) {
-        const containerWidth = calendarGrid.offsetWidth;
-        
-        // Adjust calendar day sizes for smaller screens
-        if (containerWidth < 500) {
-            const days = calendarGrid.querySelectorAll('.day');
-            days.forEach(day => {
-                if (day.classList.contains('wedding-day')) {
-                    day.style.transform = 'scale(1.03)'; // Slightly smaller scale on small screens
-                }
-            });
-        }
-    }
-    
-    // Adjust octagon frame for different screen sizes
-    const octagonFrame = document.querySelector('.octagon-frame');
-    if (octagonFrame) {
-        const containerWidth = document.querySelector('.photo-section').offsetWidth;
-        if (containerWidth < 350) {
-            octagonFrame.style.width = '90%';
-        } else {
-            octagonFrame.style.width = '80%';
         }
     }
 }
@@ -327,46 +260,41 @@ function applyLanguage(language) {
     // Translation data
     const translations = {
         'en': {
-            'save-our-date': 'Save Our Date',
-            'day-of-week': 'Sunday',
-            'date': 'November 2, 2025',
-            'venue-name': 'ROYAL WEDDING VENUE',
-            'venue-address': 'BIKANER, RAJASTHAN',
-            'rsvp-label': 'RSVP BY:',
-            'rsvp-date': 'October 1, 2025',
-            'add-calendar': 'Add to Calendar',
-            'share': 'Share',
+            'save-the-date': 'Save the Date',
+            'we-are-getting-married': 'We are getting married',
             'countdown-title': 'Countdown to the Big Day',
             'days': 'Days',
             'hours': 'Hours',
             'minutes': 'Minutes',
             'seconds': 'Seconds',
             'download': 'Download Invitation',
-            'month': 'November 2025'
+            'date': 'November 2, 2025'
         },
         'hi': {
-            'save-our-date': 'हमारी तिथि सुरक्षित रखें',
-            'day-of-week': 'रविवार',
-            'date': 'नवंबर 2, 2025',
-            'venue-name': 'रॉयल वेडिंग वेन्यू',
-            'venue-address': 'बीकानेर, राजस्थान',
-            'rsvp-label': 'कृपया उत्तर दें:',
-            'rsvp-date': 'अक्टूबर 1, 2025',
-            'add-calendar': 'कैलेंडर में जोड़ें',
-            'share': 'शेयर करें',
+            'save-the-date': 'इस शुभ दिन में शामिल हों',
+            'we-are-getting-married': 'हम विवाह के बंधन में बंधने जा रहे हैं, शादी मे जरूर पधारना सा',
             'countdown-title': 'उस खास दिन की उलटी गिनती',
             'days': 'दिन',
             'hours': 'घंटे',
             'minutes': 'मिनट',
             'seconds': 'सेकंड',
             'download': 'निमंत्रण डाउनलोड करें',
-            'month': 'नवंबर 2025'
+            'date': '2 नवंबर, 2025'
         }
     };
     
     // Apply translations to elements with data attributes
     document.querySelectorAll('[data-' + language + ']').forEach(element => {
-        element.textContent = element.getAttribute('data-' + language);
+        // Special handling for date element with sparkles
+        if (element.classList.contains('date')) {
+            // Get the date text node (the middle child between sparkle elements)
+            const dateText = element.childNodes[1];
+            if (dateText && dateText.nodeType === Node.TEXT_NODE) {
+                dateText.nodeValue = element.getAttribute('data-' + language);
+            }
+        } else {
+            element.textContent = element.getAttribute('data-' + language);
+        }
         
         // Add fade transition
         element.classList.add('fade-transition');
@@ -380,64 +308,16 @@ function applyLanguage(language) {
     
     // Apply translations to specific elements
     if (translations[language]) {
-        // Save Our Date heading
-        const saveOurDate = document.querySelector('.save-our-date');
-        if (saveOurDate) {
-            applyTransitionEffect(saveOurDate, translations[language]['save-our-date']);
+        // Save the Date heading
+        const saveTheDate = document.querySelector('.save-the-date');
+        if (saveTheDate) {
+            applyTransitionEffect(saveTheDate, translations[language]['save-the-date']);
         }
         
-        // Calendar month heading
-        const calendarHeader = document.querySelector('.calendar-header h3');
-        if (calendarHeader) {
-            applyTransitionEffect(calendarHeader, translations[language]['month']);
-        }
-        
-        // Day of week
-        const dayOfWeek = document.querySelector('.day-of-week');
-        if (dayOfWeek) {
-            applyTransitionEffect(dayOfWeek, translations[language]['day-of-week']);
-        }
-        
-        // Date
-        const date = document.querySelector('.date');
-        if (date) {
-            applyTransitionEffect(date, translations[language]['date']);
-        }
-        
-        // Venue name
-        const venueName = document.querySelector('.venue-name');
-        if (venueName) {
-            applyTransitionEffect(venueName, translations[language]['venue-name']);
-        }
-        
-        // Venue address
-        const venueAddress = document.querySelector('.venue-address');
-        if (venueAddress) {
-            applyTransitionEffect(venueAddress, translations[language]['venue-address']);
-        }
-        
-        // RSVP label
-        const rsvpLabel = document.querySelector('.rsvp-label');
-        if (rsvpLabel) {
-            applyTransitionEffect(rsvpLabel, translations[language]['rsvp-label']);
-        }
-        
-        // RSVP date
-        const rsvpDate = document.querySelector('.rsvp-date');
-        if (rsvpDate) {
-            applyTransitionEffect(rsvpDate, translations[language]['rsvp-date']);
-        }
-        
-        // Add to Calendar button
-        const addCalendarBtn = document.querySelector('.add-calendar span');
-        if (addCalendarBtn) {
-            applyTransitionEffect(addCalendarBtn, translations[language]['add-calendar']);
-        }
-        
-        // Share button
-        const shareBtn = document.querySelector('.share-btn span');
-        if (shareBtn) {
-            applyTransitionEffect(shareBtn, translations[language]['share']);
+        // Wedding details heading
+        const weddingDetailsH3 = document.querySelector('.wedding-details h3');
+        if (weddingDetailsH3) {
+            applyTransitionEffect(weddingDetailsH3, translations[language]['we-are-getting-married']);
         }
         
         // Countdown title
@@ -486,18 +366,18 @@ function getCurrentLanguage() {
 
 // Function to add decorative elements and animations
 function addDecorations() {
-    // Add subtle animation to the save-our-date heading
-    const saveOurDate = document.querySelector('.save-our-date');
-    if (saveOurDate) {
-        saveOurDate.style.transition = 'all 0.5s ease';
+    // Add subtle animation to the save-the-date heading
+    const saveTheDate = document.querySelector('.save-the-date');
+    if (saveTheDate) {
+        saveTheDate.style.transition = 'all 0.5s ease';
         
-        saveOurDate.addEventListener('mouseover', function() {
-            this.style.textShadow = '2px 2px 4px rgba(183, 110, 121, 0.4)';
+        saveTheDate.addEventListener('mouseover', function() {
+            this.style.textShadow = '2px 2px 4px rgba(168, 7, 26, 0.4)';
             this.style.transform = 'scale(1.05)';
         });
         
-        saveOurDate.addEventListener('mouseout', function() {
-            this.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.1)';
+        saveTheDate.addEventListener('mouseout', function() {
+            this.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.2)';
             this.style.transform = 'scale(1)';
         });
     }
@@ -519,77 +399,350 @@ function addDecorations() {
     });
     
     // Add a subtle entrance animation for the main content
-    const saveDate = document.querySelector('.save-date-container');
-    if (saveDate) {
-        saveDate.style.opacity = '0';
-        saveDate.style.transform = 'translateY(20px)';
-        saveDate.style.transition = 'opacity 1s ease, transform 1s ease';
+    const content = document.querySelector('.content');
+    if (content) {
+        content.style.opacity = '0';
+        content.style.transform = 'translateY(20px)';
+        content.style.transition = 'opacity 1s ease, transform 1s ease';
         
         setTimeout(() => {
-            saveDate.style.opacity = '1';
-            saveDate.style.transform = 'translateY(0)';
+            content.style.opacity = '1';
+            content.style.transform = 'translateY(0)';
         }, 300);
     }
     
-    // Add hover effects to action buttons
-    const actionButtons = document.querySelectorAll('.action-btn');
-    actionButtons.forEach(button => {
-        button.style.transition = 'all 0.3s ease';
-        
-        button.addEventListener('mouseover', function() {
-            this.style.transform = 'translateY(-3px)';
-            this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
-            this.style.backgroundColor = 'var(--gold-color)';
-            this.style.color = 'white';
-        });
-        
-        button.addEventListener('mouseout', function() {
-            this.style.transform = '';
-            this.style.boxShadow = '';
-            this.style.backgroundColor = '';
-            this.style.color = '';
-        });
-    });
+    // Add sparkle effect to the page
+    addSparkleEffect();
     
-    // Add calendar day hover effects
-    addCalendarEffects();
+    // Highlight the wedding date with special effects
+    highlightWeddingDate();
 }
 
-// Function to add calendar effects
-function addCalendarEffects() {
-    // Add hover effects to calendar days
-    const days = document.querySelectorAll('.day:not(.empty)');
-    days.forEach(day => {
-        day.addEventListener('mouseover', function() {
-            if (!this.classList.contains('wedding-day')) {
-                this.style.transform = 'translateY(-2px)';
-                this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-            }
+// Function to add sparkle effect to the page
+function addSparkleEffect() {
+    // Create sparkles container
+    const sparklesContainer = document.createElement('div');
+    sparklesContainer.className = 'sparkles-container';
+    sparklesContainer.style.position = 'absolute';
+    sparklesContainer.style.top = '0';
+    sparklesContainer.style.left = '0';
+    sparklesContainer.style.width = '100%';
+    sparklesContainer.style.height = '100%';
+    sparklesContainer.style.pointerEvents = 'none';
+    sparklesContainer.style.overflow = 'hidden';
+    sparklesContainer.style.zIndex = '50';
+    
+    document.querySelector('.border-design').appendChild(sparklesContainer);
+    
+    // Create random sparkles
+    const createSparkle = () => {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Random position
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        sparkle.style.left = `${posX}%`;
+        sparkle.style.top = `${posY}%`;
+        
+        // Random size
+        const size = Math.random() * 6 + 2;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+        
+        // Random animation delay
+        const delay = Math.random() * 3;
+        sparkle.style.animationDelay = `${delay}s`;
+        
+        // Random animation duration
+        const duration = Math.random() * 2 + 2;
+        sparkle.style.animationDuration = `${duration}s`;
+        
+        sparklesContainer.appendChild(sparkle);
+        
+        // Remove sparkle after animation completes
+        setTimeout(() => {
+            sparkle.remove();
+        }, duration * 1000);
+    };
+    
+    // Create initial sparkles
+    for (let i = 0; i < 15; i++) {
+        createSparkle();
+    }
+    
+    // Create new sparkles periodically
+    setInterval(() => {
+        createSparkle();
+    }, 500);
+    
+    // Add sparkles on mouse move
+    document.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.9) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            
+            // Position at mouse cursor
+            const rect = sparklesContainer.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            sparkle.style.left = `${x}px`;
+            sparkle.style.top = `${y}px`;
+            
+            // Random size
+            const size = Math.random() * 6 + 2;
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            
+            sparklesContainer.appendChild(sparkle);
+            
+            // Remove sparkle after animation completes
+            setTimeout(() => {
+                sparkle.remove();
+            }, 3000);
+        }
+    });
+}
+
+// Function to highlight the wedding date
+function highlightWeddingDate() {
+    const dateElement = document.querySelector('.date');
+    if (dateElement) {
+        // Add pulsing effect on hover
+        dateElement.addEventListener('mouseover', function() {
+            this.style.transform = 'scale(1.1)';
+            this.style.transition = 'transform 0.3s ease';
         });
         
-        day.addEventListener('mouseout', function() {
-            if (!this.classList.contains('wedding-day')) {
-                this.style.transform = '';
-                this.style.boxShadow = '';
-            }
+        dateElement.addEventListener('mouseout', function() {
+            this.style.transform = 'scale(1)';
         });
+        
+        // Add CSS class for heart beat animation
+        if (!document.querySelector('#date-pulse-style')) {
+            const style = document.createElement('style');
+            style.id = 'date-pulse-style';
+            style.textContent = `
+                @keyframes heartbeat {
+                    0% { transform: scale(1); }
+                    14% { transform: scale(1.1); }
+                    28% { transform: scale(1); }
+                    42% { transform: scale(1.15); }
+                    70% { transform: scale(1); }
+                }
+                .heartbeat {
+                    animation: heartbeat 2s ease infinite;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Add heartbeat animation
+        dateElement.classList.add('heartbeat');
+    }
+}
+
+// Function to setup background music
+function setupBackgroundMusic() {
+    const audio = document.getElementById('backgroundMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicIcon = document.getElementById('musicIcon');
+    
+    if (!audio || !musicToggle) return;
+    
+    // Set initial volume
+    audio.volume = 0.3;
+    
+    // Get saved music preference or default to true (music on)
+    let isMusicPlaying = localStorage.getItem('musicEnabled') !== 'false';
+    
+    // Set initial state
+    updateMusicButtonState(isMusicPlaying);
+    
+    // Auto-play music when content loads (after loading screen)
+    setTimeout(() => {
+        if (isMusicPlaying) {
+            playMusic();
+        }
+    }, 3500); // Start after loading screen completes
+    
+    // Music toggle click handler
+    musicToggle.addEventListener('click', function() {
+        if (audio.paused) {
+            playMusic();
+            isMusicPlaying = true;
+        } else {
+            pauseMusic();
+            isMusicPlaying = false;
+        }
+        
+        // Save preference
+        localStorage.setItem('musicEnabled', isMusicPlaying);
+        updateMusicButtonState(isMusicPlaying);
     });
     
-    // Add special effects to wedding day
-    const weddingDay = document.querySelector('.wedding-day');
-    if (weddingDay) {
-        // Add pulsing animation
-        const pulseAnimation = document.createElement('style');
-        pulseAnimation.textContent = `
-            @keyframes wedding-day-pulse {
-                0% { box-shadow: 0 0 5px rgba(183, 110, 121, 0.3); }
-                50% { box-shadow: 0 0 15px rgba(183, 110, 121, 0.5); }
-                100% { box-shadow: 0 0 5px rgba(183, 110, 121, 0.3); }
-            }
-            .heart-highlight {
-                animation: wedding-day-pulse 2s infinite;
-            }
+    // Handle audio events
+    audio.addEventListener('loadstart', function() {
+        console.log('Music loading started...');
+    });
+    
+    audio.addEventListener('canplaythrough', function() {
+        console.log('Music can play through');
+    });
+    
+    audio.addEventListener('error', function(e) {
+        console.error('Audio error:', e);
+        updateMusicButtonState(false);
+        musicToggle.style.display = 'none'; // Hide button if audio fails
+    });
+    
+    // Function to play music
+    function playMusic() {
+        const playPromise = audio.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Music started playing');
+                updateMusicButtonState(true);
+            }).catch(error => {
+                console.log('Auto-play was prevented:', error);
+                // Show a message to user about clicking to enable music
+                showMusicEnableMessage();
+                updateMusicButtonState(false);
+            });
+        }
+    }
+    
+    // Function to pause music
+    function pauseMusic() {
+        audio.pause();
+        updateMusicButtonState(false);
+    }
+    
+    // Function to update button state
+    function updateMusicButtonState(isPlaying) {
+        if (isPlaying) {
+            musicToggle.classList.remove('music-off');
+            musicToggle.title = 'Click to pause music';
+            musicIcon.innerHTML = `
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+            `;
+        } else {
+            musicToggle.classList.add('music-off');
+            musicToggle.title = 'Click to play music';
+            musicIcon.innerHTML = `
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+            `;
+        }
+    }
+    
+    // Function to show music enable message
+    function showMusicEnableMessage() {
+        const message = document.createElement('div');
+        message.className = 'music-enable-message';
+        message.style.cssText = `
+            position: fixed;
+            bottom: 0%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(168, 7, 26, 0.95);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+            transition: opacity 0.5s ease;
+            border: 2px solid #d4af37;
+            text-align: center;
+            max-width: 300px;
+            font-size: 0.9rem;
         `;
-        document.head.appendChild(pulseAnimation);
+        
+        const currentLang = getCurrentLanguage();
+        // message.textContent = currentLang === 'hi' ? 
+        //     'संगीत चालू करने के लिए 🎵 बटन पर क्लिक करें' : 
+        //     'Click 🎵 button to enable music';
+        
+        // document.body.appendChild(message);
+        
+        // Remove message after 5 seconds
+        setTimeout(() => {
+            message.style.opacity = '0';
+            setTimeout(() => {
+                if (document.body.contains(message)) {
+                    document.body.removeChild(message);
+                }
+            }, 200);
+        }, 1000);
+    }
+}
+
+// Function to setup calendar button
+function setupCalendarButton() {
+    const calendarBtn = document.getElementById('calendarBtn');
+    if (calendarBtn) {
+        calendarBtn.addEventListener('click', function() {
+            // Create Google Calendar link
+            const eventTitle = 'Wedding of Hemanth and Minakashi';
+            const eventLocation = 'Bikaner, Rajasthan';
+            const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
+            const eventDate = '20251102'; // YYYYMMDD format
+            
+            // Set as all-day event
+            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
+            
+            window.open(googleCalendarUrl, '_blank');
+            
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.className = 'download-success';
+            successMsg.style.backgroundColor = 'rgba(46, 125, 50, 0.9)'; // Green background for calendar
+            
+            // Set message based on current language
+            successMsg.textContent = getCurrentLanguage() === 'hi' ? 
+                'कैलेंडर खुल गया!' : 
+                'Calendar opened!';
+            
+            document.body.appendChild(successMsg);
+            
+            // Remove the success message after 3 seconds
+            setTimeout(() => {
+                successMsg.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(successMsg)) {
+                        document.body.removeChild(successMsg);
+                    }
+                }, 500);
+            }, 2500);
+        });
+    }
+}
+
+// Function to setup loading screen
+function setupLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    
+    if (loadingScreen) {
+        // Show loading screen for 3 seconds, then fade out
+        setTimeout(() => {
+            // Start fade out animation
+            loadingScreen.classList.add('fade-out');
+            
+            // Show main content
+            document.body.classList.add('content-loaded');
+            
+            // Remove loading screen from DOM after fade out completes
+            setTimeout(() => {
+                loadingScreen.remove();
+            }, 1000); // Wait for fade out animation to complete
+        }, 2000); // Show loading screen for 2 seconds
     }
 }
