@@ -1,25 +1,208 @@
-// Optimized Wedding Invitation Script
-// Cache frequently used elements and values for better performance
+// High-Performance Wedding Invitation Script
+// Advanced caching, optimization, and performance monitoring
 const CACHE = {
-    elements: {},
+    elements: new Map(), // Use Map for better performance than Object
     config: WEDDING_CONFIG,
     currentLang: null,
     weddingDate: null,
-    intervals: [],
-    timeouts: []
+    intervals: new Set(), // Use Set for unique intervals
+    timeouts: new Set(),  // Use Set for unique timeouts
+    observers: new Set(), // Intersection observers for lazy operations
+    rafIds: new Set(),    // RequestAnimationFrame IDs
+    eventListeners: new Map(), // Track event listeners for cleanup
+    performance: {
+        startTime: performance.now(),
+        metrics: new Map(),
+        loadTimes: new Map()
+    }
 };
 
-// Utility function to get cached elements
+// Performance monitoring utilities
+const PERF = {
+    mark: (name) => {
+        CACHE.performance.metrics.set(name, performance.now());
+    },
+    measure: (name, startMark) => {
+        const startTime = CACHE.performance.metrics.get(startMark);
+        if (startTime) {
+            const duration = performance.now() - startTime;
+            CACHE.performance.loadTimes.set(name, duration);
+            console.log(`⚡ ${name}: ${duration.toFixed(2)}ms`);
+            return duration;
+        }
+    },
+    logMetrics: () => {
+        const total = performance.now() - CACHE.performance.startTime;
+        console.log(`🚀 Total initialization time: ${total.toFixed(2)}ms`);
+        CACHE.performance.loadTimes.forEach((time, name) => {
+            console.log(`📊 ${name}: ${time.toFixed(2)}ms`);
+        });
+    }
+};
+
+// High-performance element caching with Map
 function getElement(id, useCache = true) {
-    if (useCache && CACHE.elements[id]) {
-        return CACHE.elements[id];
+    if (useCache && CACHE.elements.has(id)) {
+        return CACHE.elements.get(id);
     }
     const element = document.getElementById(id);
     if (useCache && element) {
-        CACHE.elements[id] = element;
+        CACHE.elements.set(id, element);
     }
     return element;
 }
+
+// Batch element getter for performance
+function getElements(...ids) {
+    return ids.map(id => getElement(id));
+}
+
+// Advanced DOM utilities
+const DOM = {
+    // Fast element creation with attributes
+    create: (tag, attributes = {}, content = '') => {
+        const el = document.createElement(tag);
+        Object.entries(attributes).forEach(([key, value]) => {
+            if (key === 'className') el.className = value;
+            else if (key === 'innerHTML') el.innerHTML = value;
+            else if (key === 'textContent') el.textContent = value;
+            else el.setAttribute(key, value);
+        });
+        if (content) el.textContent = content;
+        return el;
+    },
+    
+    // Batch DOM updates with DocumentFragment
+    batchUpdate: (container, updateFn) => {
+        const fragment = document.createDocumentFragment();
+        const temp = container.cloneNode(true);
+        updateFn(temp);
+        while (temp.firstChild) {
+            fragment.appendChild(temp.firstChild);
+        }
+        container.innerHTML = '';
+        container.appendChild(fragment);
+    },
+    
+    // Throttled event handler
+    throttle: (func, delay) => {
+        let timeoutId;
+        let lastExecTime = 0;
+        return function (...args) {
+            const currentTime = Date.now();
+            
+            if (currentTime - lastExecTime > delay) {
+                func.apply(this, args);
+                lastExecTime = currentTime;
+            } else {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    func.apply(this, args);
+                    lastExecTime = Date.now();
+                }, delay - (currentTime - lastExecTime));
+            }
+        };
+    },
+    
+    // Debounced event handler
+    debounce: (func, delay) => {
+        let timeoutId;
+        return function (...args) {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+    },
+    
+    // Intersection Observer for lazy operations
+    observe: (element, callback, options = {}) => {
+        if (!window.IntersectionObserver) {
+            callback(element); // Fallback for older browsers
+            return null;
+        }
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    callback(entry.target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, ...options });
+        
+        observer.observe(element);
+        CACHE.observers.add(observer);
+        return observer;
+    }
+};
+
+// Web Performance API integration
+const WEB_PERF = {
+    // Critical Resource Hints
+    preload: (href, as = 'fetch') => {
+        const link = DOM.create('link', {
+            rel: 'preload',
+            href: href,
+            as: as
+        });
+        document.head.appendChild(link);
+    },
+    
+    // Prefetch resources
+    prefetch: (href) => {
+        const link = DOM.create('link', {
+            rel: 'prefetch',
+            href: href
+        });
+        document.head.appendChild(link);
+    },
+    
+    // Monitor Largest Contentful Paint
+    observeLCP: () => {
+        try {
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                const lastEntry = entries[entries.length - 1];
+                console.log(`📊 LCP: ${lastEntry.startTime.toFixed(2)}ms`);
+            });
+            observer.observe({ entryTypes: ['largest-contentful-paint'] });
+        } catch (e) {
+            console.log('LCP observation not supported');
+        }
+    },
+    
+    // Monitor First Input Delay
+    observeFID: () => {
+        try {
+            const observer = new PerformanceObserver((list) => {
+                const entries = list.getEntries();
+                entries.forEach(entry => {
+                    console.log(`📊 FID: ${entry.processingStart - entry.startTime}ms`);
+                });
+            });
+            observer.observe({ entryTypes: ['first-input'] });
+        } catch (e) {
+            console.log('FID observation not supported');
+        }
+    },
+    
+    // Monitor Cumulative Layout Shift
+    observeCLS: () => {
+        try {
+            let clsValue = 0;
+            const observer = new PerformanceObserver((list) => {
+                for (const entry of list.getEntries()) {
+                    if (!entry.hadRecentInput) {
+                        clsValue += entry.value;
+                    }
+                }
+                console.log(`📊 CLS: ${clsValue.toFixed(4)}`);
+            });
+            observer.observe({ entryTypes: ['layout-shift'] });
+        } catch (e) {
+            console.log('CLS observation not supported');
+        }
+    }
+};
 
 // Optimized current language getter with caching
 function getCurrentLanguage() {
@@ -40,55 +223,69 @@ function formatTime(time) {
     return time < 10 ? `0${time}` : time;
 }
 
-// Countdown Timer for Wedding Date - Optimized
+// High-Performance Initialization with Performance Monitoring
 document.addEventListener('DOMContentLoaded', function() {
+    PERF.mark('init-start');
+    
     // Cache wedding date calculation
     CACHE.weddingDate = new Date(CACHE.config.dates.mainCeremony).getTime();
     
-    // Initialize all components
+    // Initialize performance monitoring
+    initializePerformanceMonitoring();
+    
+    // Initialize all components with performance tracking
     initializeApp();
+    
+    PERF.measure('Total Initialization', 'init-start');
+    
+    // Log performance metrics after initialization
+    setTimeout(() => PERF.logMetrics(), 100);
 });
 
-// Optimized app initialization
+// Initialize Web Performance Monitoring
+function initializePerformanceMonitoring() {
+    // Monitor Core Web Vitals
+    WEB_PERF.observeLCP();
+    WEB_PERF.observeFID();
+    WEB_PERF.observeCLS();
+    
+    // Preload critical resources
+    WEB_PERF.preload(CACHE.config.media.videoFile, 'video');
+    WEB_PERF.preload(CACHE.config.media.backgroundMusic, 'audio');
+    
+    // Prefetch images for better UX
+    WEB_PERF.prefetch(CACHE.config.media.ganeshaImage);
+    WEB_PERF.prefetch(CACHE.config.media.logoImage);
+}
+
+// Optimized app initialization with performance tracking
 function initializeApp() {
-    // Setup loading screen
-    setupLoadingScreen();
+    const components = [
+        { name: 'Loading Screen', fn: setupLoadingScreen },
+        { name: 'Video Download', fn: setupVideoDownload },
+        { name: 'Language Toggle', fn: setupLanguageToggle },
+        { name: 'Interactions', fn: setupInteractions },
+        { name: 'Calendar Button', fn: setupCalendarButton },
+        { name: 'Hashtag Click', fn: setupHashtagClick },
+        { name: 'Dynamic Content', fn: setupDynamicContent },
+        { name: 'Countdown Timer', fn: startCountdownTimer },
+        { name: 'Decorations', fn: addDecorations },
+        { name: 'Responsive Handling', fn: setupResponsiveHandling },
+        { name: 'Falling Flowers', fn: startFallingFlowers },
+        { name: 'Background Music', fn: setupBackgroundMusic },
+        { name: 'Music Toggle', fn: setupMusicToggle }
+    ];
     
-    // Setup video download functionality
-    setupVideoDownload();
-    
-    // Setup language toggle
-    setupLanguageToggle();
-    
-    // Setup location and date clicks
-    setupInteractions();
-    
-    // Setup calendar button
-    setupCalendarButton();
-    
-    // Setup hashtag click functionality
-    setupHashtagClick();
-    
-    // Setup dynamic content from config
-    setupDynamicContent();
-    
-    // Start optimized countdown timer
-    startCountdownTimer();
-    
-    // Add decorative elements and animations
-    addDecorations();
-    
-    // Setup responsive handling
-    setupResponsiveHandling();
-    
-    // Start falling flowers animation
-    startFallingFlowers();
-    
-    // Setup background music
-    setupBackgroundMusic();
-    
-    // Setup music toggle button
-    setupMusicToggle();
+    // Initialize components with performance tracking
+    components.forEach(({ name, fn }) => {
+        PERF.mark(`${name}-start`);
+        try {
+            fn();
+            PERF.measure(`${name} Setup`, `${name}-start`);
+        } catch (error) {
+            console.error(`❌ Failed to initialize ${name}:`, error);
+        }
+    });
 }
 
 // Enhanced falling flowers animation
@@ -102,20 +299,20 @@ function startFallingFlowers() {
     // Create initial flowers
     for (let i = 0; i < CACHE.config.effects.flowerInitialCount; i++) {
         const timeout = setTimeout(() => createFlower(flowingFlowersContainer, flowerTypes, flowerSpeeds), i * 500);
-        CACHE.timeouts.push(timeout);
+        CACHE.timeouts.add(timeout);
     }
     
     // Create flowers periodically
     const flowerInterval = setInterval(() => {
         createFlower(flowingFlowersContainer, flowerTypes, flowerSpeeds);
     }, CACHE.config.effects.flowerCreateInterval);
-    CACHE.intervals.push(flowerInterval);
+    CACHE.intervals.add(flowerInterval);
     
     // Create flower bursts periodically
     const burstInterval = setInterval(() => {
         createFlowerBurst(flowingFlowersContainer, flowerTypes, flowerSpeeds);
     }, CACHE.config.effects.flowerBurstInterval);
-    CACHE.intervals.push(burstInterval);
+    CACHE.intervals.add(burstInterval);
 }
 
 // Create individual flower
@@ -153,7 +350,7 @@ function createFlower(container, flowerTypes, flowerSpeeds) {
             flower.remove();
         }
     }, duration + 1000); // Add 1 second buffer
-    CACHE.timeouts.push(cleanup);
+    CACHE.timeouts.add(cleanup);
 }
 
 // Create flower burst effect
@@ -164,7 +361,7 @@ function createFlowerBurst(container, flowerTypes, flowerSpeeds) {
         const timeout = setTimeout(() => {
             createFlower(container, flowerTypes, flowerSpeeds);
         }, i * CACHE.config.effects.flowerBurstDelay);
-        CACHE.timeouts.push(timeout);
+        CACHE.timeouts.add(timeout);
     }
 }
 
@@ -212,7 +409,7 @@ function startCountdownTimer() {
     
     // Store interval for cleanup
     const countdownInterval = setInterval(updateCountdown, CACHE.config.settings.countdownUpdateInterval);
-    CACHE.intervals.push(countdownInterval);
+    CACHE.intervals.add(countdownInterval);
 }
 
 // Combined setup for interactions (optimized)
@@ -456,10 +653,10 @@ function showSuccessMessage(message, backgroundColor = null) {
                 document.body.removeChild(successMsg);
             }
         }, CACHE.config.messages.successFadeDuration);
-        CACHE.timeouts.push(removeTimeout);
+        CACHE.timeouts.add(removeTimeout);
     }, CACHE.config.messages.successDuration);
     
-    CACHE.timeouts.push(fadeTimeout);
+    CACHE.timeouts.add(fadeTimeout);
 }
 
 // Optimized language toggle setup
@@ -582,10 +779,10 @@ function applyTransitionEffect(element, newText) {
             element.classList.remove(CACHE.config.cssClasses.fadeIn);
         }, CACHE.config.effects.animationDurations.fadeComplete);
         
-        CACHE.timeouts.push(cleanupTimeout);
+        CACHE.timeouts.add(cleanupTimeout);
     }, CACHE.config.effects.animationDurations.fadeTransition);
     
-    CACHE.timeouts.push(updateTimeout);
+    CACHE.timeouts.add(updateTimeout);
 }
 
 // Update dynamic language-dependent content
@@ -705,7 +902,7 @@ function addEntranceAnimation() {
             content.style.transform = 'translateY(0)';
         }, CACHE.config.effects.animationDurations.contentEntrance);
         
-        CACHE.timeouts.push(timeout);
+        CACHE.timeouts.add(timeout);
     }
 }
 
@@ -749,18 +946,18 @@ function addOptimizedSparkleEffect() {
             }
         }, (duration + delay) * 1000);
         
-        CACHE.timeouts.push(timeout);
+        CACHE.timeouts.add(timeout);
     };
     
     // Create initial sparkles
     for (let i = 0; i < 5; i++) {
         const timeout = setTimeout(() => createSparkle(), i * 200);
-        CACHE.timeouts.push(timeout);
+        CACHE.timeouts.add(timeout);
     }
     
     // Create sparkles periodically
     const sparkleInterval = setInterval(createSparkle, CACHE.config.effects.sparkleCreateInterval);
-    CACHE.intervals.push(sparkleInterval);
+    CACHE.intervals.add(sparkleInterval);
     
     // Optimized mouse move sparkles
     let lastSparkleTime = 0;
@@ -788,7 +985,7 @@ function addOptimizedSparkleEffect() {
                 }
             }, CACHE.config.effects.sparkleLifetime);
             
-            CACHE.timeouts.push(timeout);
+            CACHE.timeouts.add(timeout);
         }
     }, { passive: true });
 }
@@ -1035,10 +1232,10 @@ function setupLoadingScreen() {
             }
         }, 1000);
         
-        CACHE.timeouts.push(removeTimeout);
+        CACHE.timeouts.add(removeTimeout);
     }, CACHE.config.settings.loadingScreenDuration);
     
-    CACHE.timeouts.push(timeout);
+    CACHE.timeouts.add(timeout);
 }
 
 // Calendar functionality
@@ -1114,18 +1311,158 @@ END:VCALENDAR`;
     showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['calendar-file-success'], CACHE.config.styling.calendarButtonBackground);
 }
 
-// Cleanup function for better memory management
+// Enhanced cleanup function with complete memory management
 function cleanup() {
+    console.log('🧹 Starting cleanup...');
+    
     // Clear all intervals
     CACHE.intervals.forEach(clearInterval);
-    CACHE.intervals = [];
+    CACHE.intervals.clear();
     
-    // Clear all timeouts
+    // Clear all timeouts  
     CACHE.timeouts.forEach(clearTimeout);
-    CACHE.timeouts = [];
+    CACHE.timeouts.clear();
+    
+    // Clear all RAF IDs
+    CACHE.rafIds.forEach(cancelAnimationFrame);
+    CACHE.rafIds.clear();
+    
+    // Disconnect all observers
+    CACHE.observers.forEach(observer => observer.disconnect());
+    CACHE.observers.clear();
     
     // Clear element cache
-    CACHE.elements = {};
+    CACHE.elements.clear();
+    
+    // Clear event listeners
+    CACHE.eventListeners.forEach((listeners, element) => {
+        listeners.forEach(({ event, handler, options }) => {
+            element.removeEventListener(event, handler, options);
+        });
+    });
+    CACHE.eventListeners.clear();
+    
+    console.log('✅ Cleanup completed');
+}
+
+// Enhanced event listener management
+function addTrackedEventListener(element, event, handler, options = {}) {
+    element.addEventListener(event, handler, options);
+    
+    if (!CACHE.eventListeners.has(element)) {
+        CACHE.eventListeners.set(element, []);
+    }
+    
+    CACHE.eventListeners.get(element).push({ event, handler, options });
+}
+
+// Service Worker Registration for PWA capabilities
+async function registerServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const registration = await navigator.serviceWorker.register('/sw.js');
+            console.log('🔄 Service Worker registered:', registration);
+        } catch (error) {
+            console.log('Service Worker registration failed:', error);
+        }
+    }
+}
+
+// Critical CSS inlining and optimization
+function optimizeCriticalCSS() {
+    // Remove unused CSS for first paint optimization
+    const criticalStyles = [
+        'body', '.container', '.loading-screen', '.border-design',
+        '.content', '.ganesha-container', '.invitation-text'
+    ];
+    
+    // Defer non-critical CSS
+    const nonCriticalCSS = document.querySelectorAll('link[rel="stylesheet"]:not([data-critical])');
+    nonCriticalCSS.forEach(link => {
+        link.media = 'print';
+        link.onload = function() {
+            this.media = 'all';
+        };
+    });
+}
+
+// Image lazy loading optimization
+function setupLazyLoading() {
+    const images = document.querySelectorAll('img[data-src]');
+    
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    imageObserver.unobserve(img);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        images.forEach(img => imageObserver.observe(img));
+        CACHE.observers.add(imageObserver);
+    } else {
+        // Fallback for older browsers
+        images.forEach(img => {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+        });
+    }
+}
+
+// Memory usage monitoring
+function monitorMemoryUsage() {
+    if ('memory' in performance) {
+        const memory = performance.memory;
+        console.log(`💾 Memory Usage:
+            Used: ${(memory.usedJSHeapSize / 1048576).toFixed(2)} MB
+            Total: ${(memory.totalJSHeapSize / 1048576).toFixed(2)} MB
+            Limit: ${(memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`);
+    }
+}
+
+// Network status monitoring
+function setupNetworkMonitoring() {
+    if ('connection' in navigator) {
+        const connection = navigator.connection;
+        console.log(`📶 Connection: ${connection.effectiveType}, ${connection.downlink}Mbps`);
+        
+        connection.addEventListener('change', () => {
+            console.log(`📶 Connection changed: ${connection.effectiveType}`);
+            
+            // Adjust quality based on connection
+            if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+                // Disable animations on slow connections
+                document.body.classList.add('reduced-motion');
+            }
+        });
+    }
+}
+
+// Battery API optimization
+function setupBatteryOptimization() {
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(battery => {
+            console.log(`🔋 Battery: ${Math.round(battery.level * 100)}%`);
+            
+            // Reduce animations when battery is low
+            if (battery.level < 0.2) {
+                document.body.classList.add('low-battery');
+                console.log('🔋 Low battery: Reducing animations');
+            }
+            
+            battery.addEventListener('levelchange', () => {
+                if (battery.level < 0.2) {
+                    document.body.classList.add('low-battery');
+                } else {
+                    document.body.classList.remove('low-battery');
+                }
+            });
+        });
+    }
 }
 
 // Enhanced background music setup
@@ -1173,7 +1510,7 @@ function setupBackgroundMusic() {
             setupInteractionListeners();
         }
     }, 1000);
-    CACHE.timeouts.push(initialPlayTimeout);
+    CACHE.timeouts.add(initialPlayTimeout);
     
     // Setup interaction listeners only once
     function setupInteractionListeners() {
@@ -1298,7 +1635,7 @@ function setupHashtagClick() {
     
     // Make hashtag clickable
     hashtagElement.style.cursor = 'pointer';
-    hashtagElement.title = 'Click to view on Instagram';
+    hashtagElement.title = 'Click to send hashtag idea via WhatsApp';
     
     // Add hover effect
     const handleMouseOver = () => {
@@ -1311,18 +1648,9 @@ function setupHashtagClick() {
         hashtagElement.style.textShadow = '0 1px 1px rgba(0, 0, 0, 0.1)';
     };
     
-    // Add click event to open Instagram hashtag
+    // Add click event to show options popup
     const handleClick = () => {
-        const hashtag = CACHE.config.couple.hashtag;
-        // Remove # from hashtag for URL
-        const cleanHashtag = hashtag.replace('#', '');
-        const instagramUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(cleanHashtag)}/`;
-        
-        console.log(`📱 Opening Instagram hashtag: ${hashtag}`);
-        window.open(instagramUrl, '_blank');
-        
-        // Show success message
-        showSuccessMessage(`Opening Instagram hashtag ${hashtag}`, 'rgba(225, 48, 108, 0.9)');
+        showHashtagOptionsModal();
     };
     
     // Add event listeners
@@ -1331,6 +1659,207 @@ function setupHashtagClick() {
     hashtagElement.addEventListener('click', handleClick);
     
     console.log('✅ Hashtag Instagram click functionality setup complete');
+}
+
+// Show hashtag options modal with both Instagram and WhatsApp
+function showHashtagOptionsModal() {
+    // Create modal backdrop
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: 'Cormorant Garamond', serif;
+        backdrop-filter: blur(5px);
+    `;
+    
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.style.cssText = `
+        background-color: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        max-width: 400px;
+        width: 90%;
+        border: 3px solid var(--gold-color);
+        position: relative;
+    `;
+    
+    modalContent.innerHTML = `
+        <button id="closeModal" style="
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 5px;
+        ">&times;</button>
+        
+        <h3 style="
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        ">Share Hashtag Ideas</h3>
+        
+        <p style="
+            color: var(--text-color);
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+        ">How would you like to share your hashtag ideas?</p>
+        
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <button id="whatsappOption" style="
+                background-color: #25D366;
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            ">
+                <span style="font-size: 1.2em;">📱</span>
+                WhatsApp
+            </button>
+            
+            <button id="instagramOption" style="
+                background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 10px;
+                cursor: pointer;
+                font-family: 'Cormorant Garamond', serif;
+                font-size: 1rem;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 12px rgba(225, 48, 108, 0.3);
+            ">
+                <span style="font-size: 1.2em;">📷</span>
+                Instagram
+            </button>
+        </div>
+    `;
+    
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+    
+    // Add hover effects
+    const whatsappBtn = modalContent.querySelector('#whatsappOption');
+    const instagramBtn = modalContent.querySelector('#instagramOption');
+    
+    whatsappBtn.addEventListener('mouseover', () => {
+        whatsappBtn.style.transform = 'translateY(-2px)';
+        whatsappBtn.style.boxShadow = '0 6px 16px rgba(37, 211, 102, 0.4)';
+    });
+    
+    whatsappBtn.addEventListener('mouseout', () => {
+        whatsappBtn.style.transform = 'translateY(0)';
+        whatsappBtn.style.boxShadow = '0 4px 12px rgba(37, 211, 102, 0.3)';
+    });
+    
+    instagramBtn.addEventListener('mouseover', () => {
+        instagramBtn.style.transform = 'translateY(-2px)';
+        instagramBtn.style.boxShadow = '0 6px 16px rgba(225, 48, 108, 0.4)';
+    });
+    
+    instagramBtn.addEventListener('mouseout', () => {
+        instagramBtn.style.transform = 'translateY(0)';
+        instagramBtn.style.boxShadow = '0 4px 12px rgba(225, 48, 108, 0.3)';
+    });
+    
+    // Handle WhatsApp option
+    whatsappBtn.addEventListener('click', () => {
+        const phoneNumber = '9483609058';
+        const message = 'Get Creative while creating our Wedding Hashtag!';
+        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        
+        console.log(`📱 Opening WhatsApp to send message: ${message}`);
+        window.open(whatsappUrl, '_blank');
+        
+        showSuccessMessage('Opening WhatsApp to send hashtag idea', 'rgba(37, 211, 102, 0.9)');
+        document.body.removeChild(modal);
+    });
+    
+    // Handle Instagram option
+    instagramBtn.addEventListener('click', () => {
+        const hashtag = CACHE.config.couple.hashtag;
+        const cleanHashtag = hashtag.replace('#', '');
+        const instagramUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(cleanHashtag)}/`;
+        
+        console.log(`📷 Opening Instagram hashtag: ${hashtag}`);
+        window.open(instagramUrl, '_blank');
+        
+        showSuccessMessage(`Opening Instagram hashtag ${hashtag}`, 'rgba(225, 48, 108, 0.9)');
+        document.body.removeChild(modal);
+    });
+    
+    // Handle close button
+    const closeBtn = modalContent.querySelector('#closeModal');
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    closeBtn.addEventListener('mouseover', () => {
+        closeBtn.style.color = 'var(--primary-color)';
+    });
+    
+    closeBtn.addEventListener('mouseout', () => {
+        closeBtn.style.color = '#999';
+    });
+    
+    // Handle clicking outside modal
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Handle escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            if (document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    
+    document.addEventListener('keydown', handleEscape);
+    
+    // Add entrance animation
+    modal.style.opacity = '0';
+    modalContent.style.transform = 'scale(0.8)';
+    
+    requestAnimationFrame(() => {
+        modal.style.transition = 'opacity 0.3s ease';
+        modalContent.style.transition = 'transform 0.3s ease';
+        modal.style.opacity = '1';
+        modalContent.style.transform = 'scale(1)';
+    });
 }
 
 // Add cleanup on page unload
