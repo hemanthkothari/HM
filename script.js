@@ -1,13 +1,58 @@
-// Countdown Timer for Wedding Date
+// Optimized Wedding Invitation Script
+// Cache frequently used elements and values for better performance
+const CACHE = {
+    elements: {},
+    config: WEDDING_CONFIG,
+    currentLang: null,
+    weddingDate: null,
+    intervals: [],
+    timeouts: []
+};
+
+// Utility function to get cached elements
+function getElement(id, useCache = true) {
+    if (useCache && CACHE.elements[id]) {
+        return CACHE.elements[id];
+    }
+    const element = document.getElementById(id);
+    if (useCache && element) {
+        CACHE.elements[id] = element;
+    }
+    return element;
+}
+
+// Optimized current language getter with caching
+function getCurrentLanguage() {
+    if (CACHE.currentLang === null) {
+        CACHE.currentLang = localStorage.getItem('preferredLanguage') || CACHE.config.settings.defaultLanguage;
+    }
+    return CACHE.currentLang;
+}
+
+// Update cached language
+function updateCurrentLanguage(lang) {
+    CACHE.currentLang = lang;
+    localStorage.setItem('preferredLanguage', lang);
+}
+
+// Function to format time (add leading zero if number is less than 10)
+function formatTime(time) {
+    return time < 10 ? `0${time}` : time;
+}
+
+// Countdown Timer for Wedding Date - Optimized
 document.addEventListener('DOMContentLoaded', function() {
+    // Cache wedding date calculation
+    CACHE.weddingDate = new Date(CACHE.config.dates.mainCeremony).getTime();
+    
+    // Initialize all components
+    initializeApp();
+});
+
+// Optimized app initialization
+function initializeApp() {
     // Setup loading screen
     setupLoadingScreen();
-    
-    // Set the wedding date - November 2, 2025
-    const weddingDate = new Date('November 2, 2025 00:00:00').getTime();
-    
-    // Setup background music
-    setupBackgroundMusic();
     
     // Setup PDF download functionality
     setupPdfDownload();
@@ -15,81 +60,190 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup language toggle
     setupLanguageToggle();
     
-    // Setup location click to search
-    setupLocationClick();
-    
-    // Setup date click to add to calendar
-    setupDateClick();
+    // Setup location and date clicks
+    setupInteractions();
     
     // Setup calendar button
     setupCalendarButton();
     
-    // Update the countdown every second
-    const countdownTimer = setInterval(function() {
-        // Get today's date and time
-        const now = new Date().getTime();
-        
-        // Find the time remaining between now and the wedding date
-        const timeRemaining = weddingDate - now;
-        
-        // Calculate days, hours, minutes, and seconds
-        const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-        
-        // Display the result in the corresponding elements
-        document.getElementById('days').textContent = formatTime(days);
-        document.getElementById('hours').textContent = formatTime(hours);
-        document.getElementById('minutes').textContent = formatTime(minutes);
-        document.getElementById('seconds').textContent = formatTime(seconds);
-        
-        // If the countdown is over, display a message
-        if (timeRemaining < 0) {
-            clearInterval(countdownTimer);
-            const celebrationMessage = getCurrentLanguage() === 'hi' ? 
-                'विवाह का दिन आ गया है!' : 
-                'The Wedding Day Has Arrived!';
-            document.getElementById('countdown').innerHTML = `<div class="celebration">${celebrationMessage}</div>`;
-        }
-    }, 1000);
+    // Setup dynamic content from config
+    setupDynamicContent();
     
-    // Function to format time (add leading zero if number is less than 10)
-    function formatTime(time) {
-        return time < 10 ? `0${time}` : time;
-    }
+    // Start optimized countdown timer
+    startCountdownTimer();
     
     // Add decorative elements and animations
     addDecorations();
     
-    // Check for viewport resize to adjust responsive elements
-    window.addEventListener('resize', adjustResponsiveElements);
-    adjustResponsiveElements(); // Initial adjustment
-});
+    // Setup responsive handling
+    setupResponsiveHandling();
+    
+    // Start falling flowers animation
+    startFallingFlowers();
+    
+    // Setup background music
+    setupBackgroundMusic();
+    
+    // Setup music toggle button
+    setupMusicToggle();
+}
+
+// Enhanced falling flowers animation
+function startFallingFlowers() {
+    const flowingFlowersContainer = getElement('flowingFlowers');
+    if (!flowingFlowersContainer) return;
+    
+    const flowerTypes = CACHE.config.settings.flowerTypes;
+    const flowerSpeeds = CACHE.config.settings.flowerSpeeds;
+    
+    // Create initial flowers
+    for (let i = 0; i < CACHE.config.effects.flowerInitialCount; i++) {
+        const timeout = setTimeout(() => createFlower(flowingFlowersContainer, flowerTypes, flowerSpeeds), i * 500);
+        CACHE.timeouts.push(timeout);
+    }
+    
+    // Create flowers periodically
+    const flowerInterval = setInterval(() => {
+        createFlower(flowingFlowersContainer, flowerTypes, flowerSpeeds);
+    }, CACHE.config.effects.flowerCreateInterval);
+    CACHE.intervals.push(flowerInterval);
+    
+    // Create flower bursts periodically
+    const burstInterval = setInterval(() => {
+        createFlowerBurst(flowingFlowersContainer, flowerTypes, flowerSpeeds);
+    }, CACHE.config.effects.flowerBurstInterval);
+    CACHE.intervals.push(burstInterval);
+}
+
+// Create individual flower
+function createFlower(container, flowerTypes, flowerSpeeds) {
+    const flower = document.createElement('div');
+    flower.className = `${CACHE.config.cssClasses.flower} ${flowerTypes[Math.floor(Math.random() * flowerTypes.length)]} ${flowerSpeeds[Math.floor(Math.random() * flowerSpeeds.length)]}`;
+    
+    // Random starting position and properties
+    const startX = Math.random() * 100;
+    const size = Math.random() * 15 + 10; // 10-25px
+    const rotation = Math.random() * 360;
+    const opacity = Math.random() * 0.5 + 0.3; // 0.3-0.8
+    
+    flower.style.cssText = `
+        left: ${startX}%;
+        top: -20px;
+        width: ${size}px;
+        height: ${size}px;
+        transform: rotate(${rotation}deg);
+        opacity: ${opacity};
+    `;
+    
+    container.appendChild(flower);
+    
+    // Remove flower after animation completes (match CSS animation duration)
+    const animationClass = flower.className.split(' ').find(cls => cls.includes('flower-'));
+    let duration = 15000; // default slow
+    
+    if (animationClass === 'flower-fast') duration = 8000;
+    else if (animationClass === 'flower-medium') duration = 12000;
+    else if (animationClass === 'flower-slow') duration = 15000;
+    
+    const cleanup = setTimeout(() => {
+        if (flower.parentNode) {
+            flower.remove();
+        }
+    }, duration + 1000); // Add 1 second buffer
+    CACHE.timeouts.push(cleanup);
+}
+
+// Create flower burst effect
+function createFlowerBurst(container, flowerTypes, flowerSpeeds) {
+    const burstCount = Math.floor(Math.random() * (CACHE.config.effects.flowerBurstCount.max - CACHE.config.effects.flowerBurstCount.min)) + CACHE.config.effects.flowerBurstCount.min;
+    
+    for (let i = 0; i < burstCount; i++) {
+        const timeout = setTimeout(() => {
+            createFlower(container, flowerTypes, flowerSpeeds);
+        }, i * CACHE.config.effects.flowerBurstDelay);
+        CACHE.timeouts.push(timeout);
+    }
+}
+
+// Optimized countdown timer with cached elements
+function startCountdownTimer() {
+    // Cache countdown elements
+    const countdownElements = {
+        days: getElement('days'),
+        hours: getElement('hours'),
+        minutes: getElement('minutes'),
+        seconds: getElement('seconds'),
+        countdown: getElement('countdown')
+    };
+    
+    // Optimized countdown function
+    const updateCountdown = () => {
+        const now = Date.now();
+        const timeRemaining = CACHE.weddingDate - now;
+        
+        if (timeRemaining < 0) {
+            // Clear interval and show celebration message
+            CACHE.intervals.forEach(clearInterval);
+            const celebrationMessage = CACHE.config.translations[getCurrentLanguage()]['celebration-message'];
+            countdownElements.countdown.innerHTML = `<div class="celebration">${celebrationMessage}</div>`;
+            return;
+        }
+        
+        // Calculate time units more efficiently
+        const days = Math.floor(timeRemaining / 86400000); // 1000 * 60 * 60 * 24
+        const hours = Math.floor((timeRemaining % 86400000) / 3600000); // 1000 * 60 * 60
+        const minutes = Math.floor((timeRemaining % 3600000) / 60000); // 1000 * 60
+        const seconds = Math.floor((timeRemaining % 60000) / 1000);
+        
+        // Update DOM efficiently (batch updates)
+        requestAnimationFrame(() => {
+            countdownElements.days.textContent = formatTime(days);
+            countdownElements.hours.textContent = formatTime(hours);
+            countdownElements.minutes.textContent = formatTime(minutes);
+            countdownElements.seconds.textContent = formatTime(seconds);
+        });
+    };
+    
+    // Initial update
+    updateCountdown();
+    
+    // Store interval for cleanup
+    const countdownInterval = setInterval(updateCountdown, CACHE.config.settings.countdownUpdateInterval);
+    CACHE.intervals.push(countdownInterval);
+}
+
+// Combined setup for interactions (optimized)
+function setupInteractions() {
+    setupLocationClick();
+    setupDateClick();
+}
 
 // Function to setup location click to search
 function setupLocationClick() {
     const locationElement = document.querySelector('.location');
     if (locationElement) {
         locationElement.style.cursor = 'pointer';
-        locationElement.title = 'Click to see images of Bikaner, Rajasthan';
         
-        // Add hover effect
-        locationElement.addEventListener('mouseover', function() {
-            this.style.textDecoration = 'underline';
-            this.style.color = 'var(--primary-color)';
-        });
+        // Add hover effect with optimized event handling
+        const handleMouseOver = () => {
+            locationElement.style.textDecoration = 'underline';
+            locationElement.style.color = 'var(--primary-color)';
+        };
         
-        locationElement.addEventListener('mouseout', function() {
-            this.style.textDecoration = 'none';
-            this.style.color = '';
-        });
+        const handleMouseOut = () => {
+            locationElement.style.textDecoration = 'none';
+            locationElement.style.color = '';
+        };
         
-        // Add click event to search for the location in Google Images
-        locationElement.addEventListener('click', function() {
-            const searchQuery = 'Bikaner Rajasthan tourism beauty';
+        // Add click event to search for the location
+        const handleClick = () => {
+            const searchQuery = CACHE.config.location.searchQuery;
             window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}&tbm=isch`, '_blank');
-        });
+        };
+        
+        locationElement.addEventListener('mouseover', handleMouseOver, { passive: true });
+        locationElement.addEventListener('mouseout', handleMouseOut, { passive: true });
+        locationElement.addEventListener('click', handleClick);
     }
 }
 
@@ -98,53 +252,61 @@ function setupDateClick() {
     const dateElement = document.querySelector('.date');
     if (dateElement) {
         dateElement.style.cursor = 'pointer';
-        dateElement.title = 'Click to add to your calendar';
-        
-        // Add click event to add to calendar
-        dateElement.addEventListener('click', function() {
-            // Create Google Calendar link
-            const eventTitle = 'Wedding of Hemanth and Minakashi';
-            const eventLocation = 'Bikaner, Rajasthan';
-            const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
-            const eventDate = '20251102'; // YYYYMMDD format
-            
-            // Set as all-day event
-            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
-            
-            window.open(googleCalendarUrl, '_blank');
-        });
+        dateElement.addEventListener('click', addToCalendar);
     }
 }
 
-// Function to adjust responsive elements
+// Optimized responsive handling
+function setupResponsiveHandling() {
+    // Use passive listeners and debounced resize
+    let resizeTimeout;
+    const handleResize = () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(adjustResponsiveElements, 100);
+    };
+    
+    window.addEventListener('resize', handleResize, { passive: true });
+    adjustResponsiveElements(); // Initial adjustment
+}
+
+// Function to adjust responsive elements (optimized)
 function adjustResponsiveElements() {
-    // Adjust countdown container based on screen width
-    const countdown = document.getElementById('countdown');
-    if (countdown) {
-        const containerWidth = countdown.offsetWidth;
-        const items = countdown.querySelectorAll('.countdown-item');
-        const totalItems = items.length;
-        
-        // Calculate ideal item width based on container
-        const idealItemWidth = Math.max(40, Math.min(70, (containerWidth - (totalItems * 10)) / totalItems));
-        
-        // Apply responsive sizing
+    const countdown = getElement('countdown');
+    if (!countdown) return;
+    
+    const containerWidth = countdown.offsetWidth;
+    const items = countdown.querySelectorAll('.countdown-item');
+    const totalItems = items.length;
+    
+    if (totalItems === 0) return;
+    
+    // Calculate ideal item width based on container
+    const thresholds = CACHE.config.settings.adjustmentThresholds;
+    const idealItemWidth = Math.max(
+        thresholds.minItemWidth, 
+        Math.min(thresholds.maxItemWidth, (containerWidth - (totalItems * thresholds.itemSpacing)) / totalItems)
+    );
+    
+    // Batch DOM updates
+    requestAnimationFrame(() => {
         items.forEach(item => {
             item.style.minWidth = `${idealItemWidth}px`;
         });
         
-        // Adjust font sizes for better fit on smaller screens
-        if (containerWidth < 400) {
+        // Adjust font sizes for smaller screens
+        if (containerWidth < thresholds.containerWidth) {
             items.forEach(item => {
                 const numberElement = item.querySelector('span:first-child');
                 const labelElement = item.querySelector('.label');
                 
                 if (numberElement) {
-                    numberElement.style.fontSize = `${Math.max(0.9, containerWidth / 400 * 1.3)}rem`;
+                    const scale = Math.max(thresholds.minFontScale, containerWidth / thresholds.containerWidth * thresholds.maxFontScale);
+                    numberElement.style.fontSize = `${scale}rem`;
                 }
                 
                 if (labelElement) {
-                    labelElement.style.fontSize = `${Math.max(0.5, containerWidth / 400 * 0.7)}rem`;
+                    const scale = Math.max(thresholds.labelMinScale, containerWidth / thresholds.containerWidth * thresholds.labelMaxScale);
+                    labelElement.style.fontSize = `${scale}rem`;
                 }
             });
         } else {
@@ -153,672 +315,947 @@ function adjustResponsiveElements() {
                 const numberElement = item.querySelector('span:first-child');
                 const labelElement = item.querySelector('.label');
                 
-                if (numberElement) {
-                    numberElement.style.fontSize = '';
-                }
-                
-                if (labelElement) {
-                    labelElement.style.fontSize = '';
-                }
+                if (numberElement) numberElement.style.fontSize = '';
+                if (labelElement) labelElement.style.fontSize = '';
             });
         }
-    }
+    });
 }
 
-// Function to setup PDF download
+// Optimized PDF download setup with memory leak prevention
 function setupPdfDownload() {
-    const downloadBtn = document.getElementById('downloadBtn');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', function() {
-            // Get the invitation content
-            const element = document.getElementById('invitation-content');
-            
-            // Configure the PDF options
-            const opt = {
-                margin: 10,
-                filename: 'Hemanth_Minakashi_Wedding_Invitation.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            
-            // Add a temporary class for PDF generation
-            element.classList.add('generating-pdf');
-            
-            // Generate the PDF
-            html2pdf().from(element).set(opt).save().then(() => {
-                // Remove the temporary class after PDF generation
-                element.classList.remove('generating-pdf');
-                
-                // Show a success message
-                const successMsg = document.createElement('div');
-                successMsg.className = 'download-success';
-                
-                // Set message based on current language
-                successMsg.textContent = getCurrentLanguage() === 'hi' ? 
-                    'निमंत्रण डाउनलोड हो गया!' : 
-                    'Invitation downloaded!';
-                
-                document.body.appendChild(successMsg);
-                
-                // Remove the success message after 3 seconds
-                setTimeout(() => {
-                    successMsg.style.opacity = '0';
-                    setTimeout(() => {
-                        document.body.removeChild(successMsg);
-                    }, 500);
-                }, 2500);
-            });
-        });
-    }
-}
-
-// Function to setup language toggle
-function setupLanguageToggle() {
-    const langEn = document.getElementById('langEn');
-    const langHi = document.getElementById('langHi');
+    const downloadBtn = getElement('downloadBtn');
+    if (!downloadBtn) return;
     
-    if (langEn && langHi) {
-        // Set initial language from localStorage or default to Hindi
-        const savedLanguage = localStorage.getItem('preferredLanguage') || 'hi';
-        
-        // Set active button based on saved language
-        if (savedLanguage === 'en') {
-            langEn.classList.add('active');
-            langHi.classList.remove('active');
-        } else {
-            langHi.classList.add('active');
-            langEn.classList.remove('active');
-        }
-        
-        // Apply the saved language
-        applyLanguage(savedLanguage);
-        
-        // Add click event listeners
-        langEn.addEventListener('click', function() {
-            if (!this.classList.contains('active')) {
-                this.classList.add('active');
-                langHi.classList.remove('active');
-                localStorage.setItem('preferredLanguage', 'en');
-                applyLanguage('en');
-            }
-        });
-        
-        langHi.addEventListener('click', function() {
-            if (!this.classList.contains('active')) {
-                this.classList.add('active');
-                langEn.classList.remove('active');
-                localStorage.setItem('preferredLanguage', 'hi');
-                applyLanguage('hi');
-            }
-        });
+    // Remove existing listeners to prevent duplicates
+    const existingHandler = downloadBtn._pdfHandler;
+    if (existingHandler) {
+        downloadBtn.removeEventListener('click', existingHandler);
     }
-}
-
-// Function to apply selected language
-function applyLanguage(language) {
-    // Translation data
-    const translations = {
-        'en': {
-            'save-the-date': 'Save the Date',
-            'we-are-getting-married': 'We are getting married',
-            'countdown-title': 'Countdown to the Big Day',
-            'days': 'Days',
-            'hours': 'Hours',
-            'minutes': 'Minutes',
-            'seconds': 'Seconds',
-            'download': 'Download Invitation',
-            'date': 'November 2, 2025'
-        },
-        'hi': {
-            'save-the-date': 'इस शुभ दिन में शामिल हों',
-            'we-are-getting-married': 'हम विवाह के बंधन में बंधने जा रहे हैं, शादी मे जरूर पधारना सा',
-            'countdown-title': 'उस खास दिन की उलटी गिनती',
-            'days': 'दिन',
-            'hours': 'घंटे',
-            'minutes': 'मिनट',
-            'seconds': 'सेकंड',
-            'download': 'निमंत्रण डाउनलोड करें',
-            'date': '2 नवंबर, 2025'
+    
+    // Create new handler
+    const pdfHandler = async function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Prevent multiple simultaneous downloads
+        if (downloadBtn.disabled) return;
+        
+        const element = getElement('invitation-content');
+        if (!element) return;
+        
+        // Disable button temporarily
+        downloadBtn.disabled = true;
+        downloadBtn.style.opacity = '0.6';
+        downloadBtn.style.pointerEvents = 'none';
+        
+        // Use config for PDF options
+        const opt = {
+            margin: CACHE.config.settings.pdfOptions.margin,
+            filename: CACHE.config.files.pdfFilename,
+            image: { 
+                type: CACHE.config.settings.pdfOptions.imageType, 
+                quality: CACHE.config.settings.pdfOptions.imageQuality 
+            },
+            html2canvas: { 
+                scale: CACHE.config.settings.pdfOptions.scale, 
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                imageTimeout: 15000
+            },
+            jsPDF: { 
+                unit: CACHE.config.settings.pdfOptions.unit, 
+                format: CACHE.config.settings.pdfOptions.format, 
+                orientation: CACHE.config.settings.pdfOptions.orientation 
+            }
+        };
+        
+        element.classList.add(CACHE.config.cssClasses.generatingPdf);
+        
+        try {
+            // Force garbage collection of any previous instances
+            if (window.gc) {
+                window.gc();
+            }
+            
+            await html2pdf().from(element).set(opt).save();
+            showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['download-success']);
+            console.log('✅ PDF generated successfully');
+        } catch (error) {
+            console.error('❌ PDF generation failed:', error);
+            showSuccessMessage('PDF generation failed. Please try again.', 'rgba(255, 0, 0, 0.8)');
+        } finally {
+            element.classList.remove(CACHE.config.cssClasses.generatingPdf);
+            
+            // Re-enable button after delay
+            setTimeout(() => {
+                downloadBtn.disabled = false;
+                downloadBtn.style.opacity = '1';
+                downloadBtn.style.pointerEvents = 'auto';
+            }, 2000);
         }
     };
     
-    // Apply translations to elements with data attributes
-    document.querySelectorAll('[data-' + language + ']').forEach(element => {
-        // Special handling for date element with sparkles
-        if (element.classList.contains('date')) {
-            // Get the date text node (the middle child between sparkle elements)
-            const dateText = element.childNodes[1];
-            if (dateText && dateText.nodeType === Node.TEXT_NODE) {
-                dateText.nodeValue = element.getAttribute('data-' + language);
-            }
-        } else {
-            element.textContent = element.getAttribute('data-' + language);
-        }
-        
-        // Add fade transition
-        element.classList.add('fade-transition');
-        element.classList.add('fade-out');
-        
-        setTimeout(() => {
-            element.classList.remove('fade-out');
-            element.classList.add('fade-in');
-        }, 50);
-    });
+    // Store handler reference for cleanup
+    downloadBtn._pdfHandler = pdfHandler;
+    downloadBtn.addEventListener('click', pdfHandler);
+}
+
+// Optimized success message function
+function showSuccessMessage(message, backgroundColor = null) {
+    const successMsg = document.createElement('div');
+    successMsg.className = CACHE.config.cssClasses.downloadSuccess;
+    successMsg.textContent = message;
     
-    // Apply translations to specific elements
-    if (translations[language]) {
-        // Save the Date heading
-        const saveTheDate = document.querySelector('.save-the-date');
-        if (saveTheDate) {
-            applyTransitionEffect(saveTheDate, translations[language]['save-the-date']);
-        }
-        
-        // Wedding details heading
-        const weddingDetailsH3 = document.querySelector('.wedding-details h3');
-        if (weddingDetailsH3) {
-            applyTransitionEffect(weddingDetailsH3, translations[language]['we-are-getting-married']);
-        }
-        
-        // Countdown title
-        const countdownTitle = document.querySelector('.countdown-container h3');
-        if (countdownTitle) {
-            applyTransitionEffect(countdownTitle, translations[language]['countdown-title']);
-        }
-        
-        // Countdown labels
-        const labels = document.querySelectorAll('.label');
-        if (labels.length === 4) {
-            applyTransitionEffect(labels[0], translations[language]['days']);
-            applyTransitionEffect(labels[1], translations[language]['hours']);
-            applyTransitionEffect(labels[2], translations[language]['minutes']);
-            applyTransitionEffect(labels[3], translations[language]['seconds']);
-        }
-        
-        // Download button text
-        const downloadBtn = document.querySelector('.download-button span');
-        if (downloadBtn) {
-            applyTransitionEffect(downloadBtn, translations[language]['download']);
-        }
+    if (backgroundColor) {
+        successMsg.style.backgroundColor = backgroundColor;
+    }
+    
+    document.body.appendChild(successMsg);
+    
+    // Cleanup with timeout tracking
+    const fadeTimeout = setTimeout(() => {
+        successMsg.style.opacity = '0';
+        const removeTimeout = setTimeout(() => {
+            if (document.body.contains(successMsg)) {
+                document.body.removeChild(successMsg);
+            }
+        }, CACHE.config.messages.successFadeDuration);
+        CACHE.timeouts.push(removeTimeout);
+    }, CACHE.config.messages.successDuration);
+    
+    CACHE.timeouts.push(fadeTimeout);
+}
+
+// Optimized language toggle setup
+function setupLanguageToggle() {
+    const langEn = getElement('langEn');
+    const langHi = getElement('langHi');
+    
+    if (!langEn || !langHi) return;
+    
+    // Set initial language
+    const savedLanguage = getCurrentLanguage();
+    updateLanguageButtons(savedLanguage, langEn, langHi);
+    applyLanguage(savedLanguage);
+    
+    // Add optimized click handlers
+    langEn.addEventListener('click', () => handleLanguageChange('en', langEn, langHi));
+    langHi.addEventListener('click', () => handleLanguageChange('hi', langEn, langHi));
+}
+
+// Helper function for language changes
+function handleLanguageChange(language, langEn, langHi) {
+    const currentLang = getCurrentLanguage();
+    if (currentLang === language) return;
+    
+    updateCurrentLanguage(language);
+    updateLanguageButtons(language, langEn, langHi);
+    applyLanguage(language);
+    
+    // Force update of all dynamic content including names
+    updateAllLanguageContent(language);
+}
+
+// Function to update ALL language-dependent content
+function updateAllLanguageContent(language) {
+    // Update groom and bride names directly
+    const groomNameElement = getElement('groom-name');
+    const groomFatherElement = getElement('groom-father');
+    const brideNameElement = getElement('bride-name');
+    const brideFatherElement = getElement('bride-father');
+    
+    if (groomNameElement && groomFatherElement) {
+        groomNameElement.textContent = language === 'hi' ? 
+            CACHE.config.couple.groom.nameHindi : 
+            CACHE.config.couple.groom.name;
+        groomFatherElement.textContent = language === 'hi' ? 
+            CACHE.config.couple.groom.fatherHindi : 
+            CACHE.config.couple.groom.father;
+    }
+    
+    if (brideNameElement && brideFatherElement) {
+        brideNameElement.textContent = language === 'hi' ? 
+            CACHE.config.couple.bride.nameHindi : 
+            CACHE.config.couple.bride.name;
+        brideFatherElement.textContent = language === 'hi' ? 
+            CACHE.config.couple.bride.fatherHindi : 
+            CACHE.config.couple.bride.father;
+    }
+    
+    // Update all other language content
+    updateDynamicLanguageContent(language);
+}
+
+// Helper function to update language buttons
+function updateLanguageButtons(language, langEn, langHi) {
+    if (language === 'en') {
+        langEn.classList.add('active');
+        langHi.classList.remove('active');
+    } else {
+        langHi.classList.add('active');
+        langEn.classList.remove('active');
     }
 }
 
-// Helper function to apply transition effect to element text change
+// Optimized language application
+function applyLanguage(language) {
+    const translations = CACHE.config.translations[language];
+    if (!translations) return;
+    
+    // Update all translatable elements efficiently
+    const updates = [
+        { selector: '.save-the-date', text: translations['save-the-date'] },
+        { selector: '.wedding-details h3', text: translations['we-are-getting-married'] },
+        { selector: '.countdown-container h3', text: translations['countdown-title'] },
+        { selector: '.download-button span', text: translations['download'] }
+    ];
+    
+    // Batch DOM updates
+    requestAnimationFrame(() => {
+        updates.forEach(({ selector, text }) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                applyTransitionEffect(element, text);
+            }
+        });
+        
+        // Update countdown labels
+        const labels = document.querySelectorAll('.label');
+        const labelTexts = [translations['days'], translations['hours'], translations['minutes'], translations['seconds']];
+        labels.forEach((label, index) => {
+            if (labelTexts[index]) {
+                applyTransitionEffect(label, labelTexts[index]);
+            }
+        });
+        
+        // Update dynamic content
+        updateDynamicLanguageContent(language);
+    });
+}
+
+// Helper function for transition effects (optimized)
 function applyTransitionEffect(element, newText) {
-    element.classList.add('fade-transition');
-    element.classList.add('fade-out');
+    element.classList.add(CACHE.config.cssClasses.fadeTransition, CACHE.config.cssClasses.fadeOut);
     
-    setTimeout(() => {
+    const updateTimeout = setTimeout(() => {
         element.textContent = newText;
-        element.classList.remove('fade-out');
-        element.classList.add('fade-in');
-    }, 300);
+        element.classList.remove(CACHE.config.cssClasses.fadeOut);
+        element.classList.add(CACHE.config.cssClasses.fadeIn);
+        
+        const cleanupTimeout = setTimeout(() => {
+            element.classList.remove(CACHE.config.cssClasses.fadeIn);
+        }, CACHE.config.effects.animationDurations.fadeComplete);
+        
+        CACHE.timeouts.push(cleanupTimeout);
+    }, CACHE.config.effects.animationDurations.fadeTransition);
     
-    setTimeout(() => {
-        element.classList.remove('fade-in');
-    }, 600);
+    CACHE.timeouts.push(updateTimeout);
 }
 
-// Function to get current language
-function getCurrentLanguage() {
-    return localStorage.getItem('preferredLanguage') || 'hi';
+// Update dynamic language-dependent content
+function updateDynamicLanguageContent(language) {
+    const content = CACHE.config.htmlContent.content[language];
+    const translations = CACHE.config.translations[language];
+    
+    // Update symbols and special content
+    const updates = [
+        { id: 'and-symbol', text: content.andSymbol },
+        { id: 'sparkle-symbol', text: content.sparkleSymbol },
+        { id: 'date-text', text: translations.date },
+        { id: 'sanskrit-verse-text', text: content.sanskritVerse },
+        { id: 'formal-invitation-text', text: content.formalInvitation },
+        { id: 'calendar-button-text', text: translations.calendar }
+    ];
+    
+    updates.forEach(({ id, text }) => {
+        const element = getElement(id);
+        if (element) {
+            element.textContent = text;
+        }
+    });
+    
+    // Update location
+    const locationElement = getElement('wedding-location');
+    if (locationElement) {
+        locationElement.textContent = language === 'hi' ? 
+            CACHE.config.location.venueHindi : 
+            CACHE.config.location.venue;
+    }
+    
+    // Update tooltips
+    updateTooltips(language);
 }
 
-// Function to add decorative elements and animations
+// Optimized tooltip updates
+function updateTooltips(language) {
+    const uiText = CACHE.config.uiText[language];
+    
+    // Update location tooltip
+    const locationElement = document.querySelector('.location');
+    if (locationElement && uiText) {
+        const locationName = language === 'hi' ? 
+            CACHE.config.location.venueHindi : 
+            CACHE.config.location.venue;
+        locationElement.title = `${uiText.locationTooltip} ${locationName}`;
+    }
+    
+    // Update date tooltip
+    const dateElement = document.querySelector('.date');
+    if (dateElement && uiText) {
+        dateElement.title = uiText.dateTooltip;
+    }
+    
+}
+
+// Optimized decorations with performance improvements
 function addDecorations() {
-    // Add subtle animation to the save-the-date heading
+    // Add subtle animations with better performance
+    addHoverEffects();
+    addEntranceAnimation();
+    addOptimizedSparkleEffect();
+    highlightWeddingDate();
+}
+
+// Optimized hover effects
+function addHoverEffects() {
     const saveTheDate = document.querySelector('.save-the-date');
     if (saveTheDate) {
         saveTheDate.style.transition = 'all 0.5s ease';
         
-        saveTheDate.addEventListener('mouseover', function() {
+        const handleMouseOver = function() {
             this.style.textShadow = '2px 2px 4px rgba(168, 7, 26, 0.4)';
             this.style.transform = 'scale(1.05)';
-        });
+        };
         
-        saveTheDate.addEventListener('mouseout', function() {
+        const handleMouseOut = function() {
             this.style.textShadow = '1px 1px 2px rgba(0, 0, 0, 0.2)';
             this.style.transform = 'scale(1)';
-        });
+        };
+        
+        saveTheDate.addEventListener('mouseover', handleMouseOver, { passive: true });
+        saveTheDate.addEventListener('mouseout', handleMouseOut, { passive: true });
     }
     
-    // Add subtle animation to the countdown items
+    // Countdown items hover effects
     const countdownItems = document.querySelectorAll('.countdown-item');
     countdownItems.forEach(item => {
         item.style.transition = 'all 0.3s ease';
         
-        item.addEventListener('mouseover', function() {
+        const handleMouseOver = function() {
             this.style.transform = 'translateY(-5px)';
             this.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)';
-        });
+        };
         
-        item.addEventListener('mouseout', function() {
+        const handleMouseOut = function() {
             this.style.transform = 'translateY(0)';
             this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
-        });
+        };
+        
+        item.addEventListener('mouseover', handleMouseOver, { passive: true });
+        item.addEventListener('mouseout', handleMouseOut, { passive: true });
     });
-    
-    // Add a subtle entrance animation for the main content
+}
+
+// Optimized entrance animation
+function addEntranceAnimation() {
     const content = document.querySelector('.content');
     if (content) {
         content.style.opacity = '0';
         content.style.transform = 'translateY(20px)';
         content.style.transition = 'opacity 1s ease, transform 1s ease';
         
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
             content.style.opacity = '1';
             content.style.transform = 'translateY(0)';
-        }, 300);
+        }, CACHE.config.effects.animationDurations.contentEntrance);
+        
+        CACHE.timeouts.push(timeout);
     }
-    
-    // Add sparkle effect to the page
-    addSparkleEffect();
-    
-    // Highlight the wedding date with special effects
-    highlightWeddingDate();
 }
 
-// Function to add sparkle effect to the page
-function addSparkleEffect() {
-    // Create sparkles container
+// Memory-efficient sparkle effect
+function addOptimizedSparkleEffect() {
     const sparklesContainer = document.createElement('div');
-    sparklesContainer.className = 'sparkles-container';
-    sparklesContainer.style.position = 'absolute';
-    sparklesContainer.style.top = '0';
-    sparklesContainer.style.left = '0';
-    sparklesContainer.style.width = '100%';
-    sparklesContainer.style.height = '100%';
-    sparklesContainer.style.pointerEvents = 'none';
-    sparklesContainer.style.overflow = 'hidden';
-    sparklesContainer.style.zIndex = '50';
+    sparklesContainer.className = CACHE.config.cssClasses.sparklesContainer;
+    sparklesContainer.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:50;';
     
-    document.querySelector('.border-design').appendChild(sparklesContainer);
+    const borderDesign = document.querySelector('.border-design');
+    if (!borderDesign) return;
     
-    // Create random sparkles
+    borderDesign.appendChild(sparklesContainer);
+    
+    let sparkleCount = 0;
+    const maxSparkles = CACHE.config.effects.sparkleCount;
+    
     const createSparkle = () => {
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
+        if (sparkleCount >= maxSparkles) return;
         
-        // Random position
+        const sparkle = document.createElement('div');
+        sparkle.className = CACHE.config.cssClasses.sparkle;
+        
+        // Random properties from config
+        const size = Math.random() * (CACHE.config.styling.sparkleSize.max - CACHE.config.styling.sparkleSize.min) + CACHE.config.styling.sparkleSize.min;
         const posX = Math.random() * 100;
         const posY = Math.random() * 100;
-        sparkle.style.left = `${posX}%`;
-        sparkle.style.top = `${posY}%`;
-        
-        // Random size
-        const size = Math.random() * 6 + 2;
-        sparkle.style.width = `${size}px`;
-        sparkle.style.height = `${size}px`;
-        
-        // Random animation delay
         const delay = Math.random() * 3;
-        sparkle.style.animationDelay = `${delay}s`;
-        
-        // Random animation duration
         const duration = Math.random() * 2 + 2;
-        sparkle.style.animationDuration = `${duration}s`;
+        
+        sparkle.style.cssText = `left:${posX}%;top:${posY}%;width:${size}px;height:${size}px;animation-delay:${delay}s;animation-duration:${duration}s;`;
         
         sparklesContainer.appendChild(sparkle);
+        sparkleCount++;
         
-        // Remove sparkle after animation completes
-        setTimeout(() => {
-            sparkle.remove();
-        }, duration * 1000);
+        // Remove sparkle and update count
+        const timeout = setTimeout(() => {
+            if (sparkle.parentNode) {
+                sparkle.remove();
+                sparkleCount--;
+            }
+        }, (duration + delay) * 1000);
+        
+        CACHE.timeouts.push(timeout);
     };
     
     // Create initial sparkles
-    for (let i = 0; i < 15; i++) {
-        createSparkle();
+    for (let i = 0; i < 5; i++) {
+        const timeout = setTimeout(() => createSparkle(), i * 200);
+        CACHE.timeouts.push(timeout);
     }
     
-    // Create new sparkles periodically
-    setInterval(() => {
-        createSparkle();
-    }, 500);
+    // Create sparkles periodically
+    const sparkleInterval = setInterval(createSparkle, CACHE.config.effects.sparkleCreateInterval);
+    CACHE.intervals.push(sparkleInterval);
     
-    // Add sparkles on mouse move
+    // Optimized mouse move sparkles
+    let lastSparkleTime = 0;
     document.addEventListener('mousemove', (e) => {
-        if (Math.random() > 0.9) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
+        const now = Date.now();
+        if (now - lastSparkleTime < 100) return; // Throttle
+        
+        if (Math.random() > CACHE.config.effects.sparkleMouseChance) {
+            lastSparkleTime = now;
             
-            // Position at mouse cursor
+            const sparkle = document.createElement('div');
+            sparkle.className = CACHE.config.cssClasses.sparkle;
+            
             const rect = sparklesContainer.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
+            const size = Math.random() * 4 + 2;
             
-            sparkle.style.left = `${x}px`;
-            sparkle.style.top = `${y}px`;
-            
-            // Random size
-            const size = Math.random() * 6 + 2;
-            sparkle.style.width = `${size}px`;
-            sparkle.style.height = `${size}px`;
-            
+            sparkle.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;`;
             sparklesContainer.appendChild(sparkle);
             
-            // Remove sparkle after animation completes
-            setTimeout(() => {
-                sparkle.remove();
-            }, 3000);
+            const timeout = setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.remove();
+                }
+            }, CACHE.config.effects.sparkleLifetime);
+            
+            CACHE.timeouts.push(timeout);
         }
-    });
+    }, { passive: true });
 }
 
-// Function to highlight the wedding date
+// Optimized date highlighting
 function highlightWeddingDate() {
     const dateElement = document.querySelector('.date');
-    if (dateElement) {
-        // Add pulsing effect on hover
-        dateElement.addEventListener('mouseover', function() {
-            this.style.transform = 'scale(1.1)';
-            this.style.transition = 'transform 0.3s ease';
-        });
+    if (!dateElement) return;
+    
+    // Add pulsing effect on hover
+    const handleMouseOver = function() {
+        this.style.transform = 'scale(1.1)';
+        this.style.transition = 'transform 0.3s ease';
+    };
+    
+    const handleMouseOut = function() {
+        this.style.transform = 'scale(1)';
+    };
+    
+    dateElement.addEventListener('mouseover', handleMouseOver, { passive: true });
+    dateElement.addEventListener('mouseout', handleMouseOut, { passive: true });
+    
+    // Add heartbeat animation CSS only once
+    if (!document.querySelector('#date-pulse-style')) {
+        const style = document.createElement('style');
+        style.id = 'date-pulse-style';
+        style.textContent = `
+            @keyframes heartbeat {
+                0% { transform: scale(1); }
+                14% { transform: scale(1.1); }
+                28% { transform: scale(1); }
+                42% { transform: scale(1.15); }
+                70% { transform: scale(1); }
+            }
+            .${CACHE.config.cssClasses.heartbeat} {
+                animation: heartbeat ${CACHE.config.animations.heartbeatDuration} ease infinite;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    dateElement.classList.add(CACHE.config.cssClasses.heartbeat);
+}
+
+
+// Function to setup dynamic content from config
+function setupDynamicContent() {
+    // Update HTML meta information
+    const pageTitle = getElement('page-title');
+    if (pageTitle) {
+        pageTitle.textContent = CACHE.config.htmlContent.meta.title;
+    }
+    
+    const pageDescription = getElement('page-description');
+    if (pageDescription) {
+        pageDescription.setAttribute('content', CACHE.config.htmlContent.meta.description);
+    }
+    
+    const pageKeywords = getElement('page-keywords');
+    if (pageKeywords) {
+        pageKeywords.setAttribute('content', CACHE.config.htmlContent.meta.keywords);
+    }
+    
+    const pageFavicon = getElement('page-favicon');
+    if (pageFavicon) {
+        pageFavicon.href = CACHE.config.media.logoImage;
+    }
+    
+    // Update hashtag
+    const hashtagElement = getElement('hashtag');
+    if (hashtagElement) {
+        hashtagElement.textContent = CACHE.config.couple.hashtag;
+    }
+    
+    // Update groom information
+    const groomNameElement = getElement('groom-name');
+    const groomFatherElement = getElement('groom-father');
+    
+    if (groomNameElement && groomFatherElement) {
+        const currentLang = getCurrentLanguage();
+        groomNameElement.textContent = currentLang === 'hi' ? 
+            CACHE.config.couple.groom.nameHindi : 
+            CACHE.config.couple.groom.name;
+        groomFatherElement.textContent = currentLang === 'hi' ? 
+            CACHE.config.couple.groom.fatherHindi : 
+            CACHE.config.couple.groom.father;
+    }
+    
+    // Update bride information
+    const brideNameElement = getElement('bride-name');
+    const brideFatherElement = getElement('bride-father');
+    
+    if (brideNameElement && brideFatherElement) {
+        const currentLang = getCurrentLanguage();
+        brideNameElement.textContent = currentLang === 'hi' ? 
+            CACHE.config.couple.bride.nameHindi : 
+            CACHE.config.couple.bride.name;
+        brideFatherElement.textContent = currentLang === 'hi' ? 
+            CACHE.config.couple.bride.fatherHindi : 
+            CACHE.config.couple.bride.father;
+    }
+    
+    
+    // Update loading screen logo
+    const loadingLogo = document.querySelector('.loading-logo');
+    if (loadingLogo) {
+        loadingLogo.src = CACHE.config.media.logoImage;
+        loadingLogo.alt = CACHE.config.htmlContent.images.logoAlt;
+    }
+    
+    // Update ganesha image
+    const ganeshaImage = document.querySelector('.ganesha-image');
+    if (ganeshaImage) {
+        ganeshaImage.src = CACHE.config.media.ganeshaImage;
+        ganeshaImage.alt = CACHE.config.htmlContent.images.ganeshaAlt;
+    }
+    
+    // Update all text content from config
+    const currentLang = getCurrentLanguage();
+    
+    // Main headings and content
+    const saveTheDateHeading = getElement('save-the-date-heading');
+    if (saveTheDateHeading) {
+        saveTheDateHeading.textContent = CACHE.config.translations[currentLang]['save-the-date'];
+    }
+    
+    const andSymbol = getElement('and-symbol');
+    if (andSymbol) {
+        andSymbol.textContent = CACHE.config.htmlContent.content[currentLang].andSymbol;
+    }
+    
+    const sparkleSymbol = getElement('sparkle-symbol');
+    if (sparkleSymbol) {
+        sparkleSymbol.textContent = CACHE.config.htmlContent.content[currentLang].sparkleSymbol;
+    }
+    
+    const weddingMessage = getElement('wedding-message');
+    if (weddingMessage) {
+        weddingMessage.textContent = CACHE.config.translations[currentLang]['we-are-getting-married'];
+    }
+    
+    const dateText = getElement('date-text');
+    if (dateText) {
+        dateText.textContent = CACHE.config.translations[currentLang]['date'];
+    }
+    
+    const weddingLocation = getElement('wedding-location');
+    if (weddingLocation) {
+        weddingLocation.textContent = currentLang === 'hi' ? 
+            CACHE.config.location.venueHindi : 
+            CACHE.config.location.venue;
+    }
+    
+    const countdownTitle = getElement('countdown-title');
+    if (countdownTitle) {
+        countdownTitle.textContent = CACHE.config.translations[currentLang]['countdown-title'];
+    }
+    
+    // Countdown labels
+    const daysLabel = getElement('days-label');
+    if (daysLabel) {
+        daysLabel.textContent = CACHE.config.translations[currentLang]['days'];
+    }
+    
+    const hoursLabel = getElement('hours-label');
+    if (hoursLabel) {
+        hoursLabel.textContent = CACHE.config.translations[currentLang]['hours'];
+    }
+    
+    const minutesLabel = getElement('minutes-label');
+    if (minutesLabel) {
+        minutesLabel.textContent = CACHE.config.translations[currentLang]['minutes'];
+    }
+    
+    const secondsLabel = getElement('seconds-label');
+    if (secondsLabel) {
+        secondsLabel.textContent = CACHE.config.translations[currentLang]['seconds'];
+    }
+    
+    // Sanskrit verse
+    const sanskritVerseText = getElement('sanskrit-verse-text');
+    if (sanskritVerseText) {
+        sanskritVerseText.textContent = CACHE.config.htmlContent.content[currentLang].sanskritVerse;
+    }
+    
+    // Formal invitation
+    const formalInvitationText = getElement('formal-invitation-text');
+    if (formalInvitationText) {
+        formalInvitationText.textContent = CACHE.config.htmlContent.content[currentLang].formalInvitation;
+    }
+    
+    // Button texts
+    const downloadButtonText = getElement('download-button-text');
+    if (downloadButtonText) {
+        downloadButtonText.textContent = CACHE.config.translations[currentLang]['download'];
+    }
+    
+    const calendarButtonText = getElement('calendar-button-text');
+    if (calendarButtonText) {
+        calendarButtonText.textContent = CACHE.config.translations[currentLang]['calendar'];
+    }
+    
+    // Update language button text
+    const langEnBtn = getElement('langEn');
+    const langHiBtn = getElement('langHi');
+    if (langEnBtn && langHiBtn) {
+        langEnBtn.textContent = CACHE.config.htmlContent.buttons[currentLang].english;
+        langHiBtn.textContent = CACHE.config.htmlContent.buttons[currentLang].hindi;
+    }
+    
+    // Update tooltips
+    updateTooltips(currentLang);
+}
+
+// Optimized loading screen setup
+function setupLoadingScreen() {
+    const loadingScreen = getElement('loading-screen');
+    if (!loadingScreen) return;
+    
+    // Hide main content initially during loading
+    const mainContent = document.querySelector('.container');
+    if (mainContent) {
+        mainContent.style.opacity = '0';
+        mainContent.style.visibility = 'hidden';
+    }
+    
+    const timeout = setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.transition = 'opacity 1s ease';
         
-        dateElement.addEventListener('mouseout', function() {
-            this.style.transform = 'scale(1)';
-        });
+        const removeTimeout = setTimeout(() => {
+            if (loadingScreen && loadingScreen.parentNode) {
+                loadingScreen.style.display = 'none';
+            }
+            
+            // Show main content after loading screen is gone
+            if (mainContent) {
+                mainContent.style.visibility = 'visible';
+                mainContent.style.opacity = '1';
+                mainContent.style.transition = 'opacity 0.5s ease';
+                
+                // Add loaded class for any CSS animations
+                document.body.classList.add(CACHE.config.cssClasses.contentLoaded);
+            }
+        }, 1000);
         
-        // Add CSS class for heart beat animation
-        if (!document.querySelector('#date-pulse-style')) {
-            const style = document.createElement('style');
-            style.id = 'date-pulse-style';
-            style.textContent = `
-                @keyframes heartbeat {
-                    0% { transform: scale(1); }
-                    14% { transform: scale(1.1); }
-                    28% { transform: scale(1); }
-                    42% { transform: scale(1.15); }
-                    70% { transform: scale(1); }
-                }
-                .heartbeat {
-                    animation: heartbeat 2s ease infinite;
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // Add heartbeat animation
-        dateElement.classList.add('heartbeat');
+        CACHE.timeouts.push(removeTimeout);
+    }, CACHE.config.settings.loadingScreenDuration);
+    
+    CACHE.timeouts.push(timeout);
+}
+
+// Calendar functionality
+function setupCalendarButton() {
+    const calendarBtn = getElement('calendarBtn');
+    if (calendarBtn) {
+        calendarBtn.addEventListener('click', addToCalendar);
     }
 }
 
-// Function to setup background music
+function addToCalendar() {
+    const eventDetails = {
+        title: CACHE.config.event.title,
+        start: CACHE.config.dates.calendarStartDate,
+        end: CACHE.config.dates.calendarEndDate,
+        description: CACHE.config.event.description,
+        location: CACHE.config.location.venue
+    };
+    
+    // Create calendar URL
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventDetails.title)}&dates=${eventDetails.start}/${eventDetails.end}&details=${encodeURIComponent(eventDetails.description)}&location=${encodeURIComponent(eventDetails.location)}`;
+    
+    // Try to open calendar, fallback to creating ICS file
+    try {
+        window.open(calendarUrl, '_blank');
+        showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['calendar-success'], CACHE.config.styling.calendarButtonBackground);
+    } catch (error) {
+        console.error('Calendar opening failed, creating ICS file:', error);
+        createICSFile(eventDetails);
+    }
+}
+
+function createICSFile(eventDetails) {
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Wedding Invitation//EN
+BEGIN:VEVENT
+UID:${Date.now()}@wedding-invitation.com
+DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DTSTART:${eventDetails.start}T000000Z
+DTEND:${eventDetails.end}T235959Z
+SUMMARY:${eventDetails.title}
+DESCRIPTION:${eventDetails.description}
+LOCATION:${eventDetails.location}
+BEGIN:VALARM
+TRIGGER:-P1D
+DESCRIPTION:${CACHE.config.alarmMessages.oneDayBefore}
+ACTION:DISPLAY
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT8H
+DESCRIPTION:${CACHE.config.alarmMessages.morningOf}
+ACTION:DISPLAY
+END:VALARM
+BEGIN:VALARM
+TRIGGER:PT0S
+DESCRIPTION:${CACHE.config.alarmMessages.eventStart}
+ACTION:DISPLAY
+END:VALARM
+END:VEVENT
+END:VCALENDAR`;
+    
+    const blob = new Blob([icsContent], { type: 'text/calendar' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = CACHE.config.files.icsFilename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['calendar-file-success'], CACHE.config.styling.calendarButtonBackground);
+}
+
+// Cleanup function for better memory management
+function cleanup() {
+    // Clear all intervals
+    CACHE.intervals.forEach(clearInterval);
+    CACHE.intervals = [];
+    
+    // Clear all timeouts
+    CACHE.timeouts.forEach(clearTimeout);
+    CACHE.timeouts = [];
+    
+    // Clear element cache
+    CACHE.elements = {};
+}
+
+// Enhanced background music setup
 function setupBackgroundMusic() {
-    const audio = document.getElementById('backgroundMusic');
-    const musicToggle = document.getElementById('musicToggle');
-    const musicIcon = document.getElementById('musicIcon');
-    
-    if (!audio || !musicToggle) return;
-    
-    // Set initial volume
-    audio.volume = 0.3;
-    
-    // Get saved music preference or default to true (music on)
-    let isMusicPlaying = localStorage.getItem('musicEnabled') !== 'false';
-    
-    // Set initial state
-    updateMusicButtonState(isMusicPlaying);
-    
-    // Auto-play music when content loads (after loading screen)
-    setTimeout(() => {
-        if (isMusicPlaying) {
-            playMusic();
-        }
-    }, 3500); // Start after loading screen completes
-    
-    // Music toggle click handler
-    musicToggle.addEventListener('click', function() {
-        if (audio.paused) {
-            playMusic();
-            isMusicPlaying = true;
-        } else {
-            pauseMusic();
-            isMusicPlaying = false;
-        }
-        
-        // Save preference
-        localStorage.setItem('musicEnabled', isMusicPlaying);
-        updateMusicButtonState(isMusicPlaying);
-    });
-    
-    // Handle audio events
-    audio.addEventListener('loadstart', function() {
-        console.log('Music loading started...');
-    });
-    
-    audio.addEventListener('canplaythrough', function() {
-        console.log('Music can play through');
-    });
-    
-    audio.addEventListener('error', function(e) {
-        console.error('Audio error:', e);
-        updateMusicButtonState(false);
-        musicToggle.style.display = 'none'; // Hide button if audio fails
-    });
-    
-    // Function to play music
-    function playMusic() {
-        const playPromise = audio.play();
-        
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                console.log('Music started playing');
-                updateMusicButtonState(true);
-            }).catch(error => {
-                console.log('Auto-play was prevented:', error);
-                // Show a message to user about clicking to enable music
-                showMusicEnableMessage();
-                updateMusicButtonState(false);
-            });
-        }
+    const backgroundMusic = getElement('backgroundMusic');
+    if (!backgroundMusic) {
+        console.log('Background music element not found');
+        return;
     }
     
-    // Function to pause music
-    function pauseMusic() {
-        audio.pause();
-        updateMusicButtonState(false);
+    // Set volume to a more audible level
+    backgroundMusic.volume = 0.5;
+    
+    console.log('Setting up background music...');
+    
+    // Flag to track if interaction listeners have been set up
+    let interactionListenersActive = false;
+    
+    // Try to play music - prevents multiple instances
+    const playMusic = async () => {
+        try {
+            // Check if music is already playing to prevent duplicates
+            if (!backgroundMusic.paused) {
+                console.log('🎵 Music is already playing');
+                return true;
+            }
+            
+            console.log('Attempting to play background music...');
+            backgroundMusic.currentTime = 0;
+            const playPromise = backgroundMusic.play();
+            await playPromise;
+            console.log('🎵 Background music started successfully!');
+            return true;
+        } catch (error) {
+            console.log('⚠️ Autoplay prevented by browser:', error.message);
+            return false;
+        }
+    };
+    
+    // Try to play immediately when page loads
+    const initialPlayTimeout = setTimeout(async () => {
+        const success = await playMusic();
+        if (!success && !interactionListenersActive) {
+            console.log('📱 Music will start on first user interaction...');
+            setupInteractionListeners();
+        }
+    }, 1000);
+    CACHE.timeouts.push(initialPlayTimeout);
+    
+    // Setup interaction listeners only once
+    function setupInteractionListeners() {
+        if (interactionListenersActive) return;
+        
+        interactionListenersActive = true;
+        
+        const playOnUserInteraction = async (event) => {
+            console.log('🖱️ User interaction detected, starting music...');
+            const success = await playMusic();
+            if (success) {
+                // Remove all interaction listeners after successful play
+                ['click', 'touchstart', 'keydown', 'mousemove'].forEach(eventType => {
+                    document.removeEventListener(eventType, playOnUserInteraction);
+                });
+                interactionListenersActive = false;
+                console.log('✅ Music interaction listeners removed');
+            }
+        };
+        
+        // Add interaction listeners with { once: true } to prevent duplicates
+        ['click', 'touchstart', 'keydown', 'mousemove'].forEach(eventType => {
+            document.addEventListener(eventType, playOnUserInteraction, { once: true, passive: true });
+        });
     }
     
-    // Function to update button state
+    // Handle audio events for debugging
+    backgroundMusic.addEventListener('loadstart', () => {
+        console.log('🔄 Music loading started...');
+    });
+    
+    backgroundMusic.addEventListener('canplay', () => {
+        console.log('✅ Music is ready to play');
+    });
+    
+    backgroundMusic.addEventListener('playing', () => {
+        console.log('▶️ Music is now playing');
+    });
+    
+    backgroundMusic.addEventListener('error', (e) => {
+        console.error('❌ Music loading error:', e.target.error);
+    });
+    
+    backgroundMusic.addEventListener('ended', () => {
+        console.log('🔄 Music ended, restarting...');
+        backgroundMusic.currentTime = 0;
+        backgroundMusic.play().catch(error => {
+            console.log('Failed to restart music:', error.message);
+        });
+    });
+    
+    // Force load the audio
+    backgroundMusic.load();
+}
+
+// Music toggle setup
+function setupMusicToggle() {
+    const musicToggle = getElement('musicToggle');
+    const backgroundMusic = getElement('backgroundMusic');
+    const playingIcon = getElement('musicPlayingIcon');
+    const mutedIcon = getElement('musicMutedIcon');
+    
+    if (!musicToggle || !backgroundMusic || !playingIcon || !mutedIcon) return;
+    
+    // Track music state
+    let isMusicPlaying = false;
+    
+    // Update button visual state with proper icon switching
     function updateMusicButtonState(isPlaying) {
         if (isPlaying) {
-            musicToggle.classList.remove('music-off');
-            musicToggle.title = 'Click to pause music';
-            musicIcon.innerHTML = `
-                <path d="M9 18V5l12-2v13"></path>
-                <circle cx="6" cy="18" r="3"></circle>
-                <circle cx="18" cy="16" r="3"></circle>
-            `;
+            // Show playing icon, hide muted icon
+            playingIcon.style.display = 'block';
+            mutedIcon.style.display = 'none';
+            musicToggle.title = 'Click to mute music';
         } else {
-            musicToggle.classList.add('music-off');
+            // Show muted icon, hide playing icon
+            playingIcon.style.display = 'none';
+            mutedIcon.style.display = 'block';
             musicToggle.title = 'Click to play music';
-            musicIcon.innerHTML = `
-                <path d="M9 18V5l12-2v13"></path>
-                <circle cx="6" cy="18" r="3"></circle>
-                <circle cx="18" cy="16" r="3"></circle>
-                <line x1="1" y1="1" x2="23" y2="23"></line>
-            `;
         }
+        isMusicPlaying = isPlaying;
+        console.log(`🎵 Music button updated: ${isPlaying ? 'Playing' : 'Muted'} icon shown`);
     }
     
-    // Function to show music enable message
-    function showMusicEnableMessage() {
-        const message = document.createElement('div');
-        message.className = 'music-enable-message';
-        message.style.cssText = `
-            position: fixed;
-            bottom: 0%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(168, 7, 26, 0.95);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-family: 'Cormorant Garamond', serif;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 1100;
-            transition: opacity 0.5s ease;
-            border: 2px solid #d4af37;
-            text-align: center;
-            max-width: 300px;
-            font-size: 0.9rem;
-        `;
-        
-        const currentLang = getCurrentLanguage();
-        // message.textContent = currentLang === 'hi' ? 
-        //     'संगीत चालू करने के लिए 🎵 बटन पर क्लिक करें' : 
-        //     'Click 🎵 button to enable music';
-        
-        // document.body.appendChild(message);
-        
-        // Remove message after 5 seconds
-        setTimeout(() => {
-            message.style.opacity = '0';
-            setTimeout(() => {
-                if (document.body.contains(message)) {
-                    document.body.removeChild(message);
-                }
-            }, 200);
-        }, 1000);
-    }
-}
-
-// Function to setup calendar button
-function setupCalendarButton() {
-    const calendarBtn = document.getElementById('calendarBtn');
-    if (calendarBtn) {
-        calendarBtn.addEventListener('click', function() {
-            // Create Google Calendar link
-            const eventTitle = 'Wedding of Hemanth and Minakashi';
-            const eventLocation = 'Bikaner, Rajasthan';
-            const eventDescription = 'Wedding celebration of Hemanth Kothari and Minakashi Rampuria';
-            const eventDate = '20251102'; // YYYYMMDD format
-            
-            // Set as all-day event
-            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${eventDate}/${eventDate}&details=${encodeURIComponent(eventDescription)}&location=${encodeURIComponent(eventLocation)}&allday=true`;
-            
-            window.open(googleCalendarUrl, '_blank');
-            
-            // Show success message
-            const successMsg = document.createElement('div');
-            successMsg.className = 'download-success';
-            successMsg.style.backgroundColor = 'rgba(46, 125, 50, 0.9)'; // Green background for calendar
-            
-            // Set message based on current language
-            successMsg.textContent = getCurrentLanguage() === 'hi' ? 
-                'कैलेंडर खुल गया!' : 
-                'Calendar opened!';
-            
-            document.body.appendChild(successMsg);
-            
-            // Remove the success message after 3 seconds
-            setTimeout(() => {
-                successMsg.style.opacity = '0';
-                setTimeout(() => {
-                    if (document.body.contains(successMsg)) {
-                        document.body.removeChild(successMsg);
-                    }
-                }, 500);
-            }, 2500);
-        });
-    }
-}
-
-// Function to setup loading screen
-function setupLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-    
-    if (loadingScreen) {
-        // Show loading screen for 3 seconds, then fade out
-        setTimeout(() => {
-            // Start fade out animation
-            loadingScreen.classList.add('fade-out');
-            
-            // Show main content
-            document.body.classList.add('content-loaded');
-            
-            // Start flowing flowers after loading screen starts fading
-            setTimeout(() => {
-                startFlowingFlowers();
-            }, 500);
-            
-            // Remove loading screen from DOM after fade completes
-            setTimeout(() => {
-                if (loadingScreen && loadingScreen.parentNode) {
-                    loadingScreen.remove();
-                }
-            }, 1000); // Wait for fade animation to complete
-        }, 3000); // Show loading screen for 3 seconds
-    }
-}
-
-// Function to start continuous flowing flowers
-function startFlowingFlowers() {
-    const flowingFlowersContainer = document.getElementById('flowingFlowers');
-    if (!flowingFlowersContainer) return;
-    
-    const flowerTypes = ['flower-petal', 'rose-flower', 'lotus-flower'];
-    const speeds = ['flower-slow', 'flower-medium', 'flower-fast'];
-    
-    // Function to create a single flower
-    function createFlower() {
-        const flower = document.createElement('div');
-        flower.className = 'flower';
-        
-        // Create flower element based on type
-        const flowerType = flowerTypes[Math.floor(Math.random() * flowerTypes.length)];
-        const flowerElement = document.createElement('div');
-        flowerElement.className = flowerType;
-        flower.appendChild(flowerElement);
-        
-        // Random horizontal position
-        flower.style.left = `${Math.random() * 100}%`;
-        
-        // Random speed
-        const speed = speeds[Math.floor(Math.random() * speeds.length)];
-        flower.classList.add(speed);
-        
-        // Random animation delay
-        flower.style.animationDelay = `${Math.random() * 2}s`;
-        
-        // Random rotation
-        flower.style.transform = `rotate(${Math.random() * 360}deg)`;
-        
-        // Add to container
-        flowingFlowersContainer.appendChild(flower);
-        
-        // Remove flower after animation completes
-        const animationDuration = speed === 'flower-slow' ? 15000 : 
-                                speed === 'flower-medium' ? 12000 : 8000;
-        
-        setTimeout(() => {
-            if (flower && flower.parentNode) {
-                flower.remove();
+    // Handle music toggle click
+    musicToggle.addEventListener('click', async () => {
+        try {
+            if (isMusicPlaying) {
+                // Pause music
+                backgroundMusic.pause();
+                updateMusicButtonState(false);
+                console.log('🔇 Music paused by user');
+            } else {
+                // Play music
+                backgroundMusic.currentTime = 0;
+                await backgroundMusic.play();
+                updateMusicButtonState(true);
+                console.log('🎵 Music resumed by user');
             }
-        }, animationDuration + 2000);
-    }
-    
-    // Create initial flowers
-    for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-            createFlower();
-        }, i * 1000);
-    }
-    
-    // Create new flowers continuously
-    setInterval(() => {
-        createFlower();
-    }, 2000); // New flower every 2 seconds
-    
-    // Create bursts of flowers occasionally
-    setInterval(() => {
-        const burstCount = Math.floor(Math.random() * 3) + 2; // 2-4 flowers
-        for (let i = 0; i < burstCount; i++) {
-            setTimeout(() => {
-                createFlower();
-            }, i * 200);
+        } catch (error) {
+            console.log('Music toggle failed:', error.message);
         }
-    }, 10000); // Burst every 10 seconds
+    });
+    
+    // Listen for music events to update button state
+    backgroundMusic.addEventListener('playing', () => {
+        updateMusicButtonState(true);
+    });
+    
+    backgroundMusic.addEventListener('pause', () => {
+        updateMusicButtonState(false);
+    });
+    
+    // Initialize button state (start with muted icon until music starts)
+    updateMusicButtonState(false);
 }
+
+// Add cleanup on page unload
+window.addEventListener('beforeunload', cleanup);

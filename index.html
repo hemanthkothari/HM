@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hemanth & Minakashi - Save the Date</title>
-    <link rel="icon" type="image/svg+xml" href="images/H & M Logo.svg">
+    <title id="page-title"></title>
+    <meta name="description" id="page-description" content="">
+    <meta name="keywords" id="page-keywords" content="">
+    <link rel="icon" type="image/svg+xml" id="page-favicon" href="">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,32 +18,35 @@
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen">
         <div class="loading-content">
-            <img src="images/H & M Logo.svg" alt="H & M Logo" class="loading-logo">
+            <img src="" alt="" class="loading-logo">
         </div>
     </div>
 
-    <!-- Audio Element for Background Music -->
-    <audio id="backgroundMusic" loop preload="auto">
-        <source src="SAVE THE DATE.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
 
     <!-- Language Toggle -->
     <div class="language-toggle">
         <div class="language-capsule">
-            <button id="langEn" class="lang-btn" data-lang="en">English</button>
-            <button id="langHi" class="lang-btn active" data-lang="hi">हिंदी</button>
+            <button id="langEn" class="lang-btn" data-lang="en"></button>
+            <button id="langHi" class="lang-btn active" data-lang="hi"></button>
         </div>
     </div>
     
     <!-- Music Toggle Button -->
     <div class="music-toggle" id="musicToggle">
-        <svg id="musicIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 18V5l12-2v13"></path>
-            <circle cx="6" cy="18" r="3"></circle>
-            <circle cx="18" cy="16" r="3"></circle>
+        <!-- Playing Icon (Speaker with sound waves) -->
+        <svg id="musicPlayingIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+        
+        <!-- Muted Icon (Speaker with X) -->
+        <svg id="musicMutedIcon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
         </svg>
     </div>
+    
     <!-- Floating download button -->
     <div class="download-button" id="downloadBtn">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -49,7 +54,7 @@
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        <span data-en="Download Invitation" data-hi="निमंत्रण डाउनलोड करें">Download Invitation</span>
+        <span id="download-button-text"></span>
     </div>
     
     <!-- Add to Calendar button -->
@@ -62,8 +67,14 @@
             <path d="M8 14h8"></path>
             <path d="M8 18h8"></path>
         </svg>
-        <span data-en="Add to Calendar" data-hi="कैलेंडर में जोड़ें">Add to Calendar</span>
+        <span id="calendar-button-text"></span>
     </div>
+    
+    <!-- Background Music -->
+    <audio id="backgroundMusic" loop preload="auto" autoplay>
+        <source src="SAVE THE DATE.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     
     <!-- Flowing Flowers Container -->
     <div class="flowing-flowers" id="flowingFlowers"></div>
@@ -72,72 +83,73 @@
         <div class="border-design">
             <div class="content">
                 <div class="ganesha-container">
-                    <img src="images/ganesha.jpg" alt="Lord Ganesha" class="ganesha-image">
+                    <img src="" alt="" class="ganesha-image">
                 </div>
                 
                 <div class="invitation-text">
-                    <h1 class="save-the-date" data-en="Save the Date" data-hi="इस शुभ दिन में शामिल हों">Save the Date</h1>
-                    <div class="hashtag">#kotharigotrampuria</div>
+                    <h1 class="save-the-date" id="save-the-date-heading"></h1>
+                    <div class="hashtag" id="hashtag"></div>
                     
                     <div class="names-container">
                         <div class="groom">
-                            <h2 data-en="Hemanth Kothari" data-hi="हेमंत कोठारी">Hemanth Kothari</h2>
-                            <p data-en="S/o Santosh Devi Kishor Kumar Ji Kothari" data-hi="संतोष देवी किशोर कुमार जी कोठारी के पुत्र">S/o Santosh Devi Kishor Kumar Ji Kothari</p>
+                            <h2 id="groom-name"></h2>
+                            <p id="groom-father"></p>
                         </div>
                         
                         <div class="and">
-                            <span>&</span>
+                            <span id="and-symbol"></span>
                         </div>
                         
                         <div class="bride">
-                            <h2 data-en="Minakashi Rampuria" data-hi="मीनाक्षी रामपुरिया">Minakashi Rampuria</h2>
-                            <p data-en="D/o Kiran Devi Pradeep Kumar Ji Rampuria" data-hi="किरण देवी प्रदीप कुमार जी रामपुरिया की पुत्री">D/o Kiran Devi Pradeep Kumar Ji Rampuria</p>
+                            <h2 id="bride-name"></h2>
+                            <p id="bride-father"></p>
                         </div>
                     </div>
                     
                     <div class="wedding-details">
-                        <h3 data-en="We are getting married" data-hi="हम विवाह के बंधन में बंधने जा रहे हैं, शादी मे जरूर पधारना सा">We are getting married</h3>
-                        <div class="date" data-en="November 2, 2025" data-hi="2 नवंबर, 2025">
-                            <span class="sparkle-left">✨</span>
-                            November 2, 2025
+                        <h3 id="wedding-message"></h3>
+                        <div class="date" id="wedding-date">
+                            <span class="sparkle-left" id="sparkle-symbol"></span>
+                            <span id="date-text"></span>
                         </div>
-                        <div class="location" data-en="Bikaner, Rajasthan" data-hi="बीकानेर, राजस्थान">Bikaner, Rajasthan</div>
+                        <div class="location" id="wedding-location"></div>
                     </div>
                     
                     <div class="countdown-container">
-                        <h3 data-en="Countdown to the Big Day" data-hi="उस खास दिन की उलटी गिनती">Countdown to the Big Day</h3>
+                        <h3 id="countdown-title"></h3>
                         <div id="countdown" class="countdown">
                             <div class="countdown-item">
                                 <span id="days">00</span>
-                                <span class="label" data-en="Days" data-hi="दिन">Days</span>
+                                <span class="label" id="days-label"></span>
                             </div>
                             <div class="countdown-item">
                                 <span id="hours">00</span>
-                                <span class="label" data-en="Hours" data-hi="घंटे">Hours</span>
+                                <span class="label" id="hours-label"></span>
                             </div>
                             <div class="countdown-item">
                                 <span id="minutes">00</span>
-                                <span class="label" data-en="Minutes" data-hi="मिनट">Minutes</span>
+                                <span class="label" id="minutes-label"></span>
                             </div>
                             <div class="countdown-item">
                                 <span id="seconds">00</span>
-                                <span class="label" data-en="Seconds" data-hi="सेकंड">Seconds</span>
+                                <span class="label" id="seconds-label"></span>
                             </div>
                         </div>
                     </div>
                     
                     <div class="sanskrit-verse">
-                        <p>सर्वमंगल मांगल्ये शिवे सर्वार्थ साधिके</p>
+                        <p id="sanskrit-verse-text"></p>
                     </div>
                     
                     <div class="footer">
-                        <p data-en="Formal invitation to follow" data-hi="औपचारिक निमंत्रण जल्द ही">Formal invitation to follow</p>
+                        <p id="formal-invitation-text"></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
+    <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
