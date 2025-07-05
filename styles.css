@@ -1,4 +1,4 @@
-/* Traditional Indian Wedding Save the Date Styles */
+/* Traditional Indian Wedding Save the Date Styles - A4 Optimized */
 :root {
     --primary-color: #a8071a;
     --gold-color: #d4af37;
@@ -9,18 +9,18 @@
     --shadow-color: rgba(0, 0, 0, 0.1);
     --gold-shadow: rgba(212, 175, 55, 0.5);
     
-    /* Responsive font sizes using clamp */
-    --h1-size: clamp(2rem, 5vw, 3.5rem);
-    --h2-size: clamp(1.5rem, 4vw, 2.2rem);
-    --h3-size: clamp(1.2rem, 3vw, 1.8rem);
-    --normal-text: clamp(1rem, 2vw, 1.2rem);
-    --small-text: clamp(0.8rem, 1.5vw, 0.9rem);
+    /* A4 Optimized font sizes - more compact */
+    --h1-size: clamp(1.8rem, 4.5vw, 2.8rem);
+    --h2-size: clamp(1.3rem, 3.5vw, 1.8rem);
+    --h3-size: clamp(1rem, 2.5vw, 1.4rem);
+    --normal-text: clamp(0.9rem, 1.8vw, 1rem);
+    --small-text: clamp(0.7rem, 1.3vw, 0.8rem);
     
-    /* Spacing */
-    --container-padding: clamp(10px, 3vw, 20px);
-    --content-padding: clamp(15px, 4vw, 30px);
-    --section-spacing: clamp(20px, 5vw, 40px);
-    --item-spacing: clamp(10px, 2vw, 20px);
+    /* A4 Optimized spacing - more compact */
+    --container-padding: clamp(8px, 2vw, 15px);
+    --content-padding: clamp(10px, 2.5vw, 20px);
+    --section-spacing: clamp(12px, 3vw, 25px);
+    --item-spacing: clamp(8px, 1.5vw, 15px);
     
     /* Force light mode colors - prevent dark mode from affecting our design */
     color-scheme: light only;
@@ -536,8 +536,70 @@ body::before {
 
 .container {
     max-width: min(90vw, 900px);
-    margin: clamp(20px, 5vh, 40px) auto;
+    margin: clamp(15px, 3vh, 25px) auto;
     padding: var(--container-padding);
+}
+
+/* A4 Print Optimization */
+@media print, (width: 794px) and (height: 1123px) {
+    .container {
+        max-width: 100%;
+        margin: 10px auto;
+        padding: 5px;
+        page-break-inside: avoid;
+    }
+    
+    .content {
+        padding: 15px;
+    }
+    
+    /* Reduce all section spacing for A4 */
+    .ganesha-container {
+        margin-bottom: 15px;
+    }
+    
+    .names-container {
+        margin-bottom: 15px;
+    }
+    
+    .wedding-details {
+        margin-bottom: 15px;
+        padding: 8px 0;
+    }
+    
+    .countdown-container {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .sanskrit-verse {
+        margin: 15px 0;
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .footer {
+        margin-top: 15px;
+    }
+    
+    /* Make Ganesha image smaller for A4 */
+    .ganesha-image {
+        width: 20%;
+    }
+    
+    /* Optimize countdown for A4 */
+    .countdown-item {
+        padding: 4px;
+        min-width: 45px;
+    }
+    
+    .countdown-item span:first-child {
+        font-size: 1.2rem;
+    }
+    
+    .label {
+        font-size: 0.6rem;
+    }
 }
 
 .border-design {

@@ -66,6 +66,9 @@ function initializeApp() {
     // Setup calendar button
     setupCalendarButton();
     
+    // Setup hashtag click functionality
+    setupHashtagClick();
+    
     // Setup dynamic content from config
     setupDynamicContent();
     
@@ -1255,6 +1258,48 @@ function setupMusicToggle() {
     
     // Initialize button state (start with muted icon until music starts)
     updateMusicButtonState(false);
+}
+
+// Setup hashtag click functionality
+function setupHashtagClick() {
+    const hashtagElement = getElement('hashtag');
+    if (!hashtagElement) return;
+    
+    // Make hashtag clickable
+    hashtagElement.style.cursor = 'pointer';
+    hashtagElement.title = 'Click to view on Instagram';
+    
+    // Add hover effect
+    const handleMouseOver = () => {
+        hashtagElement.style.transform = 'scale(1.05)';
+        hashtagElement.style.textShadow = '0 2px 4px rgba(168, 7, 26, 0.3)';
+    };
+    
+    const handleMouseOut = () => {
+        hashtagElement.style.transform = 'scale(1)';
+        hashtagElement.style.textShadow = '0 1px 1px rgba(0, 0, 0, 0.1)';
+    };
+    
+    // Add click event to open Instagram hashtag
+    const handleClick = () => {
+        const hashtag = CACHE.config.couple.hashtag;
+        // Remove # from hashtag for URL
+        const cleanHashtag = hashtag.replace('#', '');
+        const instagramUrl = `https://www.instagram.com/explore/tags/${encodeURIComponent(cleanHashtag)}/`;
+        
+        console.log(`📱 Opening Instagram hashtag: ${hashtag}`);
+        window.open(instagramUrl, '_blank');
+        
+        // Show success message
+        showSuccessMessage(`Opening Instagram hashtag ${hashtag}`, 'rgba(225, 48, 108, 0.9)');
+    };
+    
+    // Add event listeners
+    hashtagElement.addEventListener('mouseover', handleMouseOver, { passive: true });
+    hashtagElement.addEventListener('mouseout', handleMouseOut, { passive: true });
+    hashtagElement.addEventListener('click', handleClick);
+    
+    console.log('✅ Hashtag Instagram click functionality setup complete');
 }
 
 // Add cleanup on page unload
