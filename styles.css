@@ -458,31 +458,6 @@ html {
     border: 1px solid #d4af37;
 }
 
-/* PDF Generation Specific Styles */
-@media print {
-    .download-button {
-        display: none;
-    }
-    
-    body {
-        background: none;
-        background-color: white;
-    }
-    
-    .container {
-        margin: 0;
-        padding: 0;
-    }
-    
-    .border-design {
-        box-shadow: none;
-    }
-}
-
-/* Class added during PDF generation */
-.generating-pdf .download-button {
-    display: none;
-}
 
 body {
     font-family: 'Cormorant Garamond', serif;

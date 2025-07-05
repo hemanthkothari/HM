@@ -54,8 +54,8 @@ function initializeApp() {
     // Setup loading screen
     setupLoadingScreen();
     
-    // Setup PDF download functionality
-    setupPdfDownload();
+    // Setup video download functionality
+    setupVideoDownload();
     
     // Setup language toggle
     setupLanguageToggle();
@@ -325,84 +325,73 @@ function adjustResponsiveElements() {
     });
 }
 
-// Optimized PDF download setup with memory leak prevention
-function setupPdfDownload() {
+// Optimized video download setup - Direct link approach to avoid CORS issues
+function setupVideoDownload() {
     const downloadBtn = getElement('downloadBtn');
     if (!downloadBtn) return;
     
     // Remove existing listeners to prevent duplicates
-    const existingHandler = downloadBtn._pdfHandler;
+    const existingHandler = downloadBtn._videoHandler;
     if (existingHandler) {
         downloadBtn.removeEventListener('click', existingHandler);
     }
     
-    // Create new handler
-    const pdfHandler = async function(event) {
+    // Create new handler using direct link approach
+    const videoHandler = function(event) {
         event.preventDefault();
         event.stopPropagation();
         
         // Prevent multiple simultaneous downloads
         if (downloadBtn.disabled) return;
         
-        const element = getElement('invitation-content');
-        if (!element) return;
-        
         // Disable button temporarily
         downloadBtn.disabled = true;
         downloadBtn.style.opacity = '0.6';
         downloadBtn.style.pointerEvents = 'none';
         
-        // Use config for PDF options
-        const opt = {
-            margin: CACHE.config.settings.pdfOptions.margin,
-            filename: CACHE.config.files.pdfFilename,
-            image: { 
-                type: CACHE.config.settings.pdfOptions.imageType, 
-                quality: CACHE.config.settings.pdfOptions.imageQuality 
-            },
-            html2canvas: { 
-                scale: CACHE.config.settings.pdfOptions.scale, 
-                useCORS: true,
-                allowTaint: true,
-                logging: false,
-                imageTimeout: 15000
-            },
-            jsPDF: { 
-                unit: CACHE.config.settings.pdfOptions.unit, 
-                format: CACHE.config.settings.pdfOptions.format, 
-                orientation: CACHE.config.settings.pdfOptions.orientation 
-            }
-        };
-        
-        element.classList.add(CACHE.config.cssClasses.generatingPdf);
+        const videoPath = CACHE.config.media.videoFile;
+        const fileName =  CACHE.config.media.fileName;
         
         try {
-            // Force garbage collection of any previous instances
-            if (window.gc) {
-                window.gc();
-            }
+            console.log('🎬 Starting video download...');
             
-            await html2pdf().from(element).set(opt).save();
-            showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['download-success']);
-            console.log('✅ PDF generated successfully');
+            // Create direct download link - works with local files
+            const downloadLink = document.createElement('a');
+            downloadLink.href = videoPath;
+            downloadLink.download = fileName;
+            downloadLink.style.display = 'none';
+            
+            // Add to DOM temporarily
+            document.body.appendChild(downloadLink);
+            
+            // Trigger download
+            downloadLink.click();
+            
+            // Remove from DOM
+            document.body.removeChild(downloadLink);
+            
+            // Show success message
+            showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['download-success'] || 'Video downloaded successfully!');
+            console.log('✅ Video download initiated successfully');
+            
         } catch (error) {
-            console.error('❌ PDF generation failed:', error);
-            showSuccessMessage('PDF generation failed. Please try again.', 'rgba(255, 0, 0, 0.8)');
+            console.error('❌ Video download failed:', error);
+            showSuccessMessage('Video download failed. Please try again.', 'rgba(255, 0, 0, 0.8)');
         } finally {
-            element.classList.remove(CACHE.config.cssClasses.generatingPdf);
-            
             // Re-enable button after delay
             setTimeout(() => {
                 downloadBtn.disabled = false;
                 downloadBtn.style.opacity = '1';
                 downloadBtn.style.pointerEvents = 'auto';
-            }, 2000);
+            }, 1500);
         }
     };
     
     // Store handler reference for cleanup
-    downloadBtn._pdfHandler = pdfHandler;
-    downloadBtn.addEventListener('click', pdfHandler);
+    downloadBtn._videoHandler = videoHandler;
+    downloadBtn.addEventListener('click', videoHandler);
+    
+    console.log('✅ Video download functionality setup complete');
 }
 
 // Optimized success message function

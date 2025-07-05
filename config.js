@@ -17,7 +17,7 @@ const WEDDING_CONFIG = {
             father: 'Kiran Devi Pradeep Kumar Ji Rampuria',
             fatherHindi: 'किरण देवी प्रदीप कुमार जी रामपुरिया की पुत्री'
         },
-        hashtag: '#kotharigotrampuria'
+        hashtag: '#HelpUsWithAHastag'
     },
     
     // Wedding Dates
@@ -49,12 +49,13 @@ const WEDDING_CONFIG = {
         logoImage: 'images/H & M Logo.svg',
         ganeshaImage: 'images/ganesha.jpg',
         mandalaImage: 'images/mandala.jpg',
-        backgroundMusic: 'SAVE THE DATE.mp3'
+        backgroundMusic: 'SAVE THE DATE.mp3',
+        videoFile: 'images/Datethedate.mov',
+        fileName: 'HemanthMinakashi_Save-The-Date.mov'
     },
     
     // File Names
     files: {
-        pdfFilename: 'Hemanth_Minakashi_Wedding_Invitation.pdf',
         icsFilename: 'Hemanth_Minakashi_Wedding.ics'
     },
     
@@ -246,7 +247,6 @@ const WEDDING_CONFIG = {
         fadeOut: 'fade-out',
         fadeIn: 'fade-in',
         contentLoaded: 'content-loaded',
-        generatingPdf: 'generating-pdf',
         musicOff: 'music-off',
         sparklesContainer: 'sparkles-container',
         sparkle: 'sparkle',
@@ -297,16 +297,6 @@ const WEDDING_CONFIG = {
         interactionEvents: ['click', 'mouseover', 'keydown', 'touchstart', 'scroll'],
         flowerTypes: ['flower-petal', 'rose-flower', 'lotus-flower'],
         flowerSpeeds: ['flower-slow', 'flower-medium', 'flower-fast'],
-        pdfOptions: {
-            margin: 10,
-            filename: 'wedding-invitation.pdf',
-            imageType: 'jpeg',
-            imageQuality: 0.98,
-            scale: 2,
-            unit: 'mm',
-            format: 'a4',
-            orientation: 'portrait'
-        },
         countdownUpdateInterval: 1000,
         adjustmentThresholds: {
             containerWidth: 400,
