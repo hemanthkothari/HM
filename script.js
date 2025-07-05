@@ -325,7 +325,7 @@ function adjustResponsiveElements() {
     });
 }
 
-// Optimized video download setup - Direct link approach to avoid CORS issues
+// Enhanced video download setup - Force download instead of opening in browser
 function setupVideoDownload() {
     const downloadBtn = getElement('downloadBtn');
     if (!downloadBtn) return;
@@ -336,8 +336,8 @@ function setupVideoDownload() {
         downloadBtn.removeEventListener('click', existingHandler);
     }
     
-    // Create new handler using direct link approach
-    const videoHandler = function(event) {
+    // Create new handler using blob-based approach to force download
+    const videoHandler = async function(event) {
         event.preventDefault();
         event.stopPropagation();
         
@@ -350,16 +350,32 @@ function setupVideoDownload() {
         downloadBtn.style.pointerEvents = 'none';
         
         const videoPath = CACHE.config.media.videoFile;
-        const fileName =  CACHE.config.media.fileName;
+        const fileName = CACHE.config.media.fileName;
         
         try {
             console.log('🎬 Starting video download...');
             
-            // Create direct download link - works with local files
+            // Fetch the file as blob to force download
+            const response = await fetch(videoPath);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch video: ${response.status} ${response.statusText}`);
+            }
+            
+            const blob = await response.blob();
+            console.log('📁 Video blob created, size:', blob.size, 'bytes');
+            
+            // Create download URL from blob
+            const downloadUrl = URL.createObjectURL(blob);
+            
+            // Create download link with forced download
             const downloadLink = document.createElement('a');
-            downloadLink.href = videoPath;
+            downloadLink.href = downloadUrl;
             downloadLink.download = fileName;
             downloadLink.style.display = 'none';
+            
+            // Force download by setting additional attributes
+            downloadLink.setAttribute('download', fileName);
+            downloadLink.setAttribute('target', '_blank');
             
             // Add to DOM temporarily
             document.body.appendChild(downloadLink);
@@ -367,8 +383,14 @@ function setupVideoDownload() {
             // Trigger download
             downloadLink.click();
             
-            // Remove from DOM
+            // Clean up
             document.body.removeChild(downloadLink);
+            
+            // Clean up blob URL after a delay to ensure download starts
+            setTimeout(() => {
+                URL.revokeObjectURL(downloadUrl);
+                console.log('🧹 Blob URL cleaned up');
+            }, 1000);
             
             // Show success message
             showSuccessMessage(CACHE.config.translations[getCurrentLanguage()]['download-success'] || 'Video downloaded successfully!');
@@ -376,14 +398,34 @@ function setupVideoDownload() {
             
         } catch (error) {
             console.error('❌ Video download failed:', error);
-            showSuccessMessage('Video download failed. Please try again.', 'rgba(255, 0, 0, 0.8)');
+            
+            // Fallback to direct link method if blob approach fails
+            console.log('🔄 Attempting fallback download method...');
+            try {
+                const fallbackLink = document.createElement('a');
+                fallbackLink.href = videoPath;
+                fallbackLink.download = fileName;
+                fallbackLink.style.display = 'none';
+                fallbackLink.setAttribute('download', fileName);
+                fallbackLink.setAttribute('target', '_blank');
+                
+                document.body.appendChild(fallbackLink);
+                fallbackLink.click();
+                document.body.removeChild(fallbackLink);
+                
+                showSuccessMessage('Download started (fallback method)');
+                console.log('✅ Fallback download method succeeded');
+            } catch (fallbackError) {
+                console.error('❌ Fallback download also failed:', fallbackError);
+                showSuccessMessage('Download failed. Please try again or check your browser settings.', 'rgba(255, 0, 0, 0.8)');
+            }
         } finally {
             // Re-enable button after delay
             setTimeout(() => {
                 downloadBtn.disabled = false;
                 downloadBtn.style.opacity = '1';
                 downloadBtn.style.pointerEvents = 'auto';
-            }, 1500);
+            }, 2000); // Slightly longer delay for blob processing
         }
     };
     

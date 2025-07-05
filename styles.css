@@ -623,6 +623,72 @@ body::before {
 
 .invitation-text {
     position: relative;
+    background-image: url('images/groom and bride.png');
+    background-size: contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: local;
+    min-height: 50vh;
+    padding: clamp(20px, 5vw, 40px);
+}
+
+/* Mobile-first responsive background scaling */
+@media (max-width: 768px) {
+    .invitation-text {
+        background-size: contain;
+        min-height: 40vh;
+        padding: clamp(15px, 4vw, 30px);
+        background-size: 80%;
+    }
+}
+
+@media (max-width: 480px) {
+    .invitation-text {
+        background-size: 70%;
+        min-height: 35vh;
+        padding: clamp(10px, 3vw, 25px);
+    }
+}
+
+@media (max-width: 360px) {
+    .invitation-text {
+        background-size: 60%;
+        min-height: 30vh;
+        padding: clamp(8px, 2vw, 20px);
+    }
+}
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .invitation-text {
+        background-size: contain;
+        min-height: 40vh;
+        padding: clamp(10px, 2vw, 20px);
+    }
+}
+
+@media (orientation: landscape) and (max-width: 768px) and (max-height: 500px) {
+    .invitation-text {
+        background-size: 50%;
+        min-height: 35vh;
+        padding: clamp(5px, 1vw, 15px);
+    }
+}
+
+.invitation-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    border-radius: 8px;
+}
+
+.invitation-text > * {
+    position: relative;
+    z-index: 2;
 }
 
 .save-the-date {

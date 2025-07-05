@@ -50,8 +50,9 @@ const WEDDING_CONFIG = {
         ganeshaImage: 'images/ganesha.jpg',
         mandalaImage: 'images/mandala.jpg',
         backgroundMusic: 'SAVE THE DATE.mp3',
-        videoFile: 'images/Datethedate.mov',
-        fileName: 'HemanthMinakashi_Save-The-Date.mov'
+        groomBrideImage: 'images/groom and bride.png',
+        videoFile: 'images/HemanthMinakashi_Save-The-Date.mp4',
+        fileName: 'Save-The-Date-Video.mp4'
     },
     
     // File Names
