@@ -238,7 +238,7 @@ const CACHE = {
 ### WhatsApp Integration
 ```javascript
 // Direct WhatsApp messaging for hashtag ideas
-const whatsappUrl = `https://wa.me/9483609058?text=${encodeURIComponent(message)}`;
+const whatsappUrl = `https://wa.me/<YourMobileNumber>?text=${encodeURIComponent(message)}`;
 ```
 
 ### Instagram Integration
