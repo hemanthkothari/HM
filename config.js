@@ -8,13 +8,13 @@ const WEDDING_CONFIG = {
         groom: {
             name: 'Hemanth Kothari',
             nameHindi: 'हेमंत कोठारी',
-            father: 'Santosh Devi Kishor Kumar Ji Kothari',
+            father: 'S/o: Santosh Devi Kishor Kumar Ji Kothari',
             fatherHindi: 'संतोष देवी किशोर कुमार जी कोठारी के पुत्र'
         },
         bride: {
-            name: 'Minakashi Rampuria',
+            name: 'Minakshi Rampuria',
             nameHindi: 'मीनाक्षी रामपुरिया',
-            father: 'Kiran Devi Pradeep Kumar Ji Rampuria',
+            father: 'D/o: Kiran Devi Pradeep Kumar Ji Rampuria',
             fatherHindi: 'किरण देवी प्रदीप कुमार जी रामपुरिया की पुत्री'
         },
         hashtag: '#HelpUsWithAHastag'
